@@ -5,17 +5,19 @@ import { EnvironmentConfigService } from '../environment-config/environment-conf
 
 export const getTypeOrmModuleOptions = (
   config: EnvironmentConfigService,
-): TypeOrmModuleOptions =>
-  ({
+): TypeOrmModuleOptions => {
+  return {
     type: 'postgres',
     host: config.getDatabaseHost(),
     port: config.getDatabasePort(),
     username: config.getDatabaseUser(),
     password: config.getDatabasePassword(),
     database: config.getDatabaseName(),
-    entities: [__dirname + './../../**/*.entity{.ts,.js}'],
-    synchronize: true,
-    // schema: process.env.DATABASE_SCHEMA,
+    entities: ['src/**/*.entity{.ts}'],
+    synchronize: config.getDatabaseSync(),
+    schema: config.getDatabaseSchema(),
+    autoLoadEntities: true,
+    logging: true,
     // migrationsRun: true,
     // migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     // cli: {
@@ -24,7 +26,8 @@ export const getTypeOrmModuleOptions = (
     // ssl: {
     //   rejectUnauthorized: false,
     // },
-  } as TypeOrmModuleOptions);
+  } as TypeOrmModuleOptions;
+};
 
 @Module({
   imports: [

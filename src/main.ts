@@ -4,10 +4,11 @@ import { ResponseInterceptor } from '@infra/common/interceptors/response.interce
 import { LoggerService } from '@infra/services/logger/logger.service';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
     origin: true,
@@ -22,6 +23,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor(new LoggerService()));
   app.useGlobalInterceptors(new ResponseInterceptor(new LoggerService()));
 
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();
