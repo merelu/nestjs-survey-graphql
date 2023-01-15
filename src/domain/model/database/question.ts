@@ -1,3 +1,4 @@
+import { PickType } from '@nestjs/mapped-types';
 import { CommonModel } from './common';
 import { QuestionOptionModel } from './question-option';
 import { SurveyModel } from './survey';
@@ -11,3 +12,9 @@ export class QuestionModel extends CommonModel {
 
   questionOptions: QuestionOptionModel[];
 }
+
+export class CreateQuestionModel extends PickType(QuestionModel, [
+  'questionContent',
+  'allowMultipleAnswers',
+  'surveyId',
+] as const) {}
