@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { EnvironmentConfigModule } from '../environment-config/environment-config.module';
 import { EnvironmentConfigService } from '../environment-config/environment-config.service';
 
@@ -7,13 +8,14 @@ export const getTypeOrmModuleOptions = (
   config: EnvironmentConfigService,
 ): TypeOrmModuleOptions => {
   return {
+    namingStrategy: new SnakeNamingStrategy(),
     type: 'postgres',
     host: config.getDatabaseHost(),
     port: config.getDatabasePort(),
     username: config.getDatabaseUser(),
     password: config.getDatabasePassword(),
     database: config.getDatabaseName(),
-    entities: ['src/**/*.entity{.ts}'],
+    entities: ['src/infra/entities/*.entity{.ts}'],
     synchronize: config.getDatabaseSync(),
     schema: config.getDatabaseSchema(),
     autoLoadEntities: true,
