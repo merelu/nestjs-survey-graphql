@@ -18,3 +18,8 @@ export class CreateQuestionOptionModel extends PickType(QuestionOptionModel, [
   'score',
   'questionId',
 ] as const) {}
+
+export class UpdateQuestionOptionModel extends PickType(QuestionOptionModel, [
+  'optionContent',
+  'score',
+] as const) {}

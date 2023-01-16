@@ -1,16 +1,27 @@
-import { CreateUserModel, UserModel } from '@domain/model/database/user';
+import {
+  CreateUserModel,
+  UpdateUserModel,
+  UserModel,
+} from '@domain/model/database/user';
 import { EntityManager } from 'typeorm';
 
 export interface IUserRepository {
-  create(data: CreateUserModel, conn?: EntityManager): Promise<UserModel>;
+  create(
+    data: CreateUserModel,
+    conn?: EntityManager,
+  ): Promise<UserModel | null>;
 
-  findById(id: number, conn?: EntityManager): Promise<UserModel>;
+  findById(id: number, conn?: EntityManager): Promise<UserModel | null>;
 
-  findAll(): Promise<UserModel[]>;
+  findByName(name: string, conn?: EntityManager): Promise<UserModel | null>;
 
-  update(id: number, conn?: EntityManager): Promise<void>;
+  update(
+    id: number,
+    data: UpdateUserModel,
+    conn?: EntityManager,
+  ): Promise<void>;
 
-  delete(id: number, conn?: EntityManager): Promise<void>;
+  delete(id: number): Promise<boolean>;
 
-  softDelete(id: number, conn?: EntityManager): Promise<void>;
+  softDelete(id: number): Promise<boolean>;
 }

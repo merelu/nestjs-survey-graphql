@@ -12,3 +12,5 @@ export class UserModel extends CommonModel {
 }
 
 export class CreateUserModel extends PickType(UserModel, ['name'] as const) {}
+
+export class UpdateUserModel extends CreateUserModel {}

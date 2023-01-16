@@ -1,16 +1,9 @@
-import {
-  CreateUserSurveyModel,
-  UserSurveyModel,
-} from '@domain/model/database/user-survey';
-import { EntityManager } from 'typeorm';
+import { CreateUserSurveyModel } from '@domain/model/database/user-survey';
 
 export interface IUserSurveyRepository {
-  create(
-    data: CreateUserSurveyModel,
-    conn?: EntityManager,
-  ): Promise<UserSurveyModel>;
+  create(data: CreateUserSurveyModel): Promise<boolean>;
 
-  delete(id: number, conn?: EntityManager): Promise<void>;
+  delete(id: number): Promise<boolean>;
 
-  softDelete(id: number, conn?: EntityManager): Promise<void>;
+  softDelete(id: number): Promise<boolean>;
 }

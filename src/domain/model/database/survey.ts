@@ -12,8 +12,10 @@ export class SurveyModel extends CommonModel {
   questions: QuestionModel[];
 }
 
-export class createSurveyModel extends PickType(SurveyModel, [
+export class CreateSurveyModel extends PickType(SurveyModel, [
   'title',
   'description',
   'footer',
 ] as const) {}
+
+export class UpdateSurveyModel extends CreateSurveyModel {}

@@ -18,3 +18,8 @@ export class CreateQuestionModel extends PickType(QuestionModel, [
   'allowMultipleAnswers',
   'surveyId',
 ] as const) {}
+
+export class UpdateQuestionModel extends PickType(QuestionModel, [
+  'questionContent',
+  'allowMultipleAnswers',
+] as const) {}
