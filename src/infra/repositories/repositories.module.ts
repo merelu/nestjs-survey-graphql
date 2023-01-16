@@ -7,6 +7,12 @@ import { UserSurvey } from '@infra/entities/user-survey.entity';
 import { User } from '@infra/entities/user.entity';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DatabaseAnswerRepository } from './answer.repository';
+import { DatabaseQuestionOptionRepository } from './question-option.repository';
+import { DatabaseQuestionRepository } from './question.repository';
+import { DatabaseSurveyRepository } from './survey.repository';
+import { DatabaseUserSurveyRepository } from './user-survey.repository';
+import { DatabaseUserRepository } from './user.repository';
 
 @Module({
   imports: [
@@ -20,7 +26,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       Answer,
     ]),
   ],
-  providers: [],
-  exports: [],
+  providers: [
+    DatabaseUserRepository,
+    DatabaseSurveyRepository,
+    DatabaseUserSurveyRepository,
+    DatabaseQuestionRepository,
+    DatabaseQuestionOptionRepository,
+    DatabaseAnswerRepository,
+  ],
+  exports: [
+    DatabaseUserRepository,
+    DatabaseSurveyRepository,
+    DatabaseUserSurveyRepository,
+    DatabaseQuestionRepository,
+    DatabaseQuestionOptionRepository,
+    DatabaseAnswerRepository,
+  ],
 })
 export class RepositoriesModule {}
