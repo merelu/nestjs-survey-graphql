@@ -1,12 +1,13 @@
 import { SurveyModel } from '@domain/model/database/survey';
 import { UserModel } from '@domain/model/database/user';
+import { IUserSurveyModel } from '@domain/model/database/user-survey';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { CommonEntity } from './common';
 import { Survey } from './survey.entity';
 import { User } from './user.entity';
 
 @Entity()
-export class UserSurvey extends CommonEntity {
+export class UserSurvey extends CommonEntity implements IUserSurveyModel {
   @Column({ type: 'integer' })
   userId!: number;
 

@@ -4,9 +4,10 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { CommonEntity } from './common';
 import { Answer } from './answer';
 import { UserSurvey } from './user-survey.entity';
+import { IUserModel } from '@domain/model/database/user';
 
 @Entity()
-export class User extends CommonEntity {
+export class User extends CommonEntity implements IUserModel {
   @Column({ type: 'varchar', nullable: false, unique: true })
   name: string;
 

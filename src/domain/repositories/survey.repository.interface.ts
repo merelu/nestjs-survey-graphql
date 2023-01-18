@@ -13,6 +13,8 @@ export interface ISurveyRepository {
 
   findById(id: number, conn?: EntityManager): Promise<SurveyModel | null>;
 
+  findDetailById(id: number): Promise<SurveyModel | null>;
+
   findAll(): Promise<SurveyModel[]>;
 
   update(

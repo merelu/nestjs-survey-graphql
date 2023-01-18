@@ -15,6 +15,8 @@ export interface IQuestionRepository {
 
   findAll(): Promise<QuestionModel[]>;
 
+  getNextOrder(surveyId: number): Promise<number>;
+
   update(
     id: number,
     data: UpdateQuestionModel,

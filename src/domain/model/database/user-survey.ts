@@ -3,7 +3,13 @@ import { CommonModel } from './common';
 import { SurveyModel } from './survey';
 import { UserModel } from './user';
 
-export class UserSurveyModel extends CommonModel {
+export interface IUserSurveyModel {
+  id: number;
+  userId: number;
+  surveyId: number;
+}
+
+export class UserSurveyModel extends CommonModel implements IUserSurveyModel {
   userId: number;
   user: UserModel;
   surveyId: number;

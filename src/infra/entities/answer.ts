@@ -1,3 +1,4 @@
+import { IAnswerModel } from '@domain/model/database/answer';
 import { QuestionOptionModel } from '@domain/model/database/question-option';
 import { UserModel } from '@domain/model/database/user';
 import { Column, Entity, ManyToOne } from 'typeorm';
@@ -6,7 +7,7 @@ import { QuestionOption } from './question-option.entity';
 import { User } from './user.entity';
 
 @Entity()
-export class Answer extends CommonEntity {
+export class Answer extends CommonEntity implements IAnswerModel {
   @Column({ type: 'integer' })
   userId!: number;
 

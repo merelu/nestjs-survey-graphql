@@ -1,9 +1,9 @@
 import { HttpException } from '@nestjs/common';
+import { ApolloError } from 'apollo-server-express';
 
 export interface IFormatExceptionMessage {
   error_code: number;
-  error_text?: string;
-  error_description?: string;
+  error_text: string;
 }
 
 export interface IException {
@@ -12,4 +12,5 @@ export interface IException {
   internalServerErrorException(data?: IFormatExceptionMessage): HttpException;
   forbiddenException(data?: IFormatExceptionMessage): HttpException;
   unauthorizedException(data?: IFormatExceptionMessage): HttpException;
+  apolloServerException(data?: IFormatExceptionMessage): ApolloError;
 }

@@ -17,6 +17,15 @@ export class DatabaseQuestionOptionRepository
     @InjectRepository(QuestionOption)
     private readonly questionOptionEntityRepository: Repository<QuestionOption>,
   ) {}
+  async getNextOrder(questionId: number): Promise<number> {
+    const raw = await this.questionOptionEntityRepository
+      .createQueryBuilder('question_option')
+      .select('coalesce(max(question_option.order) + 1,0)', 'maxOrder')
+      .where('question_id = :questionId', { questionId })
+      .getRawOne();
+
+    return raw.maxOrder;
+  }
   async create(
     data: CreateQuestionOptionModel,
     conn?: EntityManager | undefined,
@@ -37,6 +46,7 @@ export class DatabaseQuestionOptionRepository
     }
     return this.toQuestionOption(result);
   }
+
   async findById(
     id: number,
     conn?: EntityManager | undefined,
@@ -101,6 +111,7 @@ export class DatabaseQuestionOptionRepository
     result.questionId = data.questionId;
     result.question = data.question;
     result.answers = data.answers;
+    result.order = data.order;
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;
     result.deletedAt = data.deletedAt;
@@ -114,6 +125,7 @@ export class DatabaseQuestionOptionRepository
     result.optionContent = data.optionContent;
     result.score = data.score;
     result.questionId = data.questionId;
+    result.order = data.order;
     return result;
   }
 }

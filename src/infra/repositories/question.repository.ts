@@ -15,6 +15,17 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     @InjectRepository(Question)
     private readonly questionEntityRepository: Repository<Question>,
   ) {}
+
+  async getNextOrder(surveyId: number): Promise<number> {
+    const raw = await this.questionEntityRepository
+      .createQueryBuilder('question')
+      .select('coalesce(max(question.order) + 1,0)', 'maxOrder')
+      .where('survey_id = :surveyId', { surveyId })
+      .getRawOne();
+
+    return raw.maxOrder;
+  }
+
   async create(
     data: CreateQuestionModel,
     conn?: EntityManager | undefined,
@@ -96,6 +107,7 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     result.questionOptions = data.questionOptions;
     result.surveyId = data.surveyId;
     result.survey = data.survey;
+    result.order = data.order;
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;
     result.deletedAt = data.deletedAt;
@@ -109,6 +121,7 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     result.questionContent = data.questionContent;
     result.surveyId = data.surveyId;
     result.allowMultipleAnswers = data.allowMultipleAnswers;
+    result.order = data.order;
 
     return result;
   }

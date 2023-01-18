@@ -3,7 +3,14 @@ import { CommonModel } from './common';
 import { QuestionModel } from './question';
 import { UserSurveyModel } from './user-survey';
 
-export class SurveyModel extends CommonModel {
+export interface ISurveyModel {
+  id: number;
+  title: string;
+  description: string;
+  footer: string;
+}
+
+export class SurveyModel extends CommonModel implements ISurveyModel {
   title: string;
   description: string;
   footer: string;

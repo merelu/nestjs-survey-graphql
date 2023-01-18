@@ -11,9 +11,11 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ApolloError } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
-export class ExceptionsService implements IException {
+export class ExceptionService implements IException {
   badRequestException(data: IFormatExceptionMessage): HttpException {
     return new BadRequestException(data);
   }
@@ -32,5 +34,13 @@ export class ExceptionsService implements IException {
 
   unauthorizedException(data?: IFormatExceptionMessage): HttpException {
     return new UnauthorizedException(data);
+  }
+
+  apolloServerException(data: IFormatExceptionMessage): ApolloError {
+    return new GraphQLError(data.error_text, {
+      extensions: {
+        code: data.error_code,
+      },
+    });
   }
 }

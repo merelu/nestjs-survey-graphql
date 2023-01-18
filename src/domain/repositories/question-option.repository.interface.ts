@@ -18,6 +18,8 @@ export interface IQuestionOptionRepository {
 
   findAll(): Promise<QuestionOptionModel[]>;
 
+  getNextOrder(questionId: number): Promise<number>;
+
   update(
     id: number,
     data: UpdateQuestionOptionModel,

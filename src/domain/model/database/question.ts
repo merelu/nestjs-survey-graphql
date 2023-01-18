@@ -3,9 +3,19 @@ import { CommonModel } from './common';
 import { QuestionOptionModel } from './question-option';
 import { SurveyModel } from './survey';
 
-export class QuestionModel extends CommonModel {
+export interface IQuestionModel {
+  id: number;
   questionContent: string;
   allowMultipleAnswers: boolean;
+  order: number;
+
+  surveyId: number;
+}
+
+export class QuestionModel extends CommonModel implements IQuestionModel {
+  questionContent: string;
+  allowMultipleAnswers: boolean;
+  order: number;
 
   surveyId: number;
   survey: SurveyModel;
@@ -17,6 +27,7 @@ export class CreateQuestionModel extends PickType(QuestionModel, [
   'questionContent',
   'allowMultipleAnswers',
   'surveyId',
+  'order',
 ] as const) {}
 
 export class UpdateQuestionModel extends PickType(QuestionModel, [

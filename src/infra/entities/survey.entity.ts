@@ -1,4 +1,5 @@
 import { QuestionModel } from '@domain/model/database/question';
+import { ISurveyModel } from '@domain/model/database/survey';
 import { UserSurveyModel } from '@domain/model/database/user-survey';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { CommonEntity } from './common';
@@ -6,7 +7,7 @@ import { Question } from './question.entity';
 import { UserSurvey } from './user-survey.entity';
 
 @Entity()
-export class Survey extends CommonEntity {
+export class Survey extends CommonEntity implements ISurveyModel {
   @Column({ type: 'varchar', nullable: false })
   title: string;
 

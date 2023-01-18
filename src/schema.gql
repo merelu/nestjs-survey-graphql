@@ -1,0 +1,69 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type QuestionOptionType {
+  id: ID!
+  optionContent: String!
+  score: Float!
+  order: Float!
+  questionId: Float!
+}
+
+type QuestionType {
+  id: ID!
+  questionContent: String!
+  allowMultipleAnswers: Boolean!
+  surveyId: Float!
+  order: Float!
+  questionOptions: [QuestionOptionType!]!
+}
+
+type SurveyType {
+  id: ID!
+  title: String!
+  description: String!
+  footer: String!
+  questions: [QuestionType!]!
+}
+
+type UserType {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  survey(id: Int!): SurveyType!
+  surveys: [SurveyType!]!
+  question(id: Int!): QuestionType!
+  questionOption(id: Int!): QuestionOptionType!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): UserType!
+  createSurvey(creatSurveyInput: CreateSurveyInput!): SurveyType!
+  createQuestion(createQuestionInput: CreateQuestionInput!): QuestionType!
+  createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOptionType!
+}
+
+input CreateUserInput {
+  name: String!
+}
+
+input CreateSurveyInput {
+  title: String!
+  description: String!
+  footer: String!
+}
+
+input CreateQuestionInput {
+  questionContent: String!
+  allowMultipleAnswers: Boolean!
+  surveyId: Float!
+}
+
+input CreateQuestionOptionInput {
+  optionContent: String!
+  score: Float!
+  questionId: Float!
+}

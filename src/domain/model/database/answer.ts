@@ -3,7 +3,13 @@ import { CommonModel } from './common';
 import { QuestionOptionModel } from './question-option';
 import { UserModel } from './user';
 
-export class AnswerModel extends CommonModel {
+export interface IAnswerModel {
+  id: number;
+  userId: number;
+  questionOptionId: number;
+}
+
+export class AnswerModel extends CommonModel implements IAnswerModel {
   userId: number;
   user: UserModel;
   questionOptionId: number;

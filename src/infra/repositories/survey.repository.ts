@@ -33,6 +33,7 @@ export class DatabaseSurveyRepository implements ISurveyRepository {
 
     return this.toSurvey(result);
   }
+
   async findById(
     id: number,
     conn?: EntityManager,
@@ -52,6 +53,23 @@ export class DatabaseSurveyRepository implements ISurveyRepository {
     if (!result) {
       return null;
     }
+    return this.toSurvey(result);
+  }
+
+  async findDetailById(id: number): Promise<SurveyModel | null> {
+    const result = await this.surveyEntityRepository
+      .createQueryBuilder('survey')
+      .where('survey.id = :id', { id })
+      .leftJoinAndSelect('survey.questions', 'questions')
+      .leftJoinAndSelect('questions.questionOptions', 'questionOptions')
+      .orderBy('questions.order', 'ASC')
+      .addOrderBy('questionOptions.order', 'ASC')
+      .getOne();
+
+    if (!result) {
+      return null;
+    }
+
     return this.toSurvey(result);
   }
 
