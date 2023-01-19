@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
-import { AnswerModel } from './answer';
+import { AnswerOptionModel } from './answer-option';
 import { CommonModel } from './common';
 import { QuestionModel } from './question';
 
@@ -21,7 +21,7 @@ export class QuestionOptionModel
   questionId: number;
   question: QuestionModel;
 
-  answers: AnswerModel[];
+  answerOptions: AnswerOptionModel[];
 }
 
 export class CreateQuestionOptionModel extends PickType(QuestionOptionModel, [

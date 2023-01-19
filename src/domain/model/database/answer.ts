@@ -1,22 +1,24 @@
 import { PickType } from '@nestjs/mapped-types';
+import { AnswerOptionModel } from './answer-option';
 import { CommonModel } from './common';
-import { QuestionOptionModel } from './question-option';
-import { UserModel } from './user';
+import { QuestionModel } from './question';
+import { UserSurveyModel } from './user-survey';
 
 export interface IAnswerModel {
   id: number;
-  userId: number;
-  questionOptionId: number;
+  userSurveyId: number;
+  questionId: number;
 }
 
 export class AnswerModel extends CommonModel implements IAnswerModel {
-  userId: number;
-  user: UserModel;
-  questionOptionId: number;
-  questionOption: QuestionOptionModel;
+  userSurveyId: number;
+  userSurvey: UserSurveyModel;
+  questionId: number;
+  question: QuestionModel;
+  answerOptions: AnswerOptionModel[];
 }
 
 export class CreateAnswerModel extends PickType(AnswerModel, [
-  'userId',
-  'questionOptionId',
+  'userSurveyId',
+  'questionId',
 ] as const) {}

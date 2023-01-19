@@ -9,7 +9,7 @@ export interface IQuestionOptionRepository {
   create(
     data: CreateQuestionOptionModel,
     conn?: EntityManager,
-  ): Promise<QuestionOptionModel | null>;
+  ): Promise<QuestionOptionModel>;
 
   findById(
     id: number,

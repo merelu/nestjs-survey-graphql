@@ -2,9 +2,9 @@ import { QuestionModel } from '@domain/model/database/question';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from './common';
 import { Question } from './question.entity';
-import { Answer } from './answer';
-import { AnswerModel } from '@domain/model/database/answer';
 import { IQuestionOptionModel } from '@domain/model/database/question-option';
+import { AnswerOption } from './answer-option';
+import { AnswerOptionModel } from '@domain/model/database/answer-option';
 
 @Entity()
 export class QuestionOption
@@ -18,14 +18,14 @@ export class QuestionOption
   score: number;
 
   @Column({ type: 'integer' })
-  questionId: number;
+  order: number;
 
   @Column({ type: 'integer' })
-  order: number;
+  questionId: number;
 
   @ManyToOne(() => Question, (question) => question.questionOptions)
   question!: QuestionModel;
 
-  @OneToMany(() => Answer, (answer) => answer.questionOption)
-  answers: AnswerModel[];
+  @OneToMany(() => AnswerOption, (answerOption) => answerOption.questionOption)
+  answerOptions: AnswerOptionModel[];
 }

@@ -1,22 +1,28 @@
 import { IAnswerModel } from '@domain/model/database/answer';
-import { QuestionOptionModel } from '@domain/model/database/question-option';
-import { UserModel } from '@domain/model/database/user';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { AnswerOptionModel } from '@domain/model/database/answer-option';
+import { QuestionModel } from '@domain/model/database/question';
+import { UserSurveyModel } from '@domain/model/database/user-survey';
+import { Column, Entity, ManyToOne, OneToMany, Unique } from 'typeorm';
+import { AnswerOption } from './answer-option';
 import { CommonEntity } from './common';
-import { QuestionOption } from './question-option.entity';
-import { User } from './user.entity';
+import { Question } from './question.entity';
+import { UserSurvey } from './user-survey.entity';
 
 @Entity()
+@Unique(['userSurveyId', 'questionId'])
 export class Answer extends CommonEntity implements IAnswerModel {
   @Column({ type: 'integer' })
-  userId!: number;
+  userSurveyId!: number;
 
-  @ManyToOne(() => User, (user) => user.answers)
-  user!: UserModel;
+  @ManyToOne(() => UserSurvey, (userSurvey) => userSurvey.answers)
+  userSurvey!: UserSurveyModel;
 
   @Column({ type: 'integer' })
-  questionOptionId!: number;
+  questionId!: number;
 
-  @ManyToOne(() => QuestionOption, (questionOption) => questionOption.answers)
-  questionOption!: QuestionOptionModel;
+  @ManyToOne(() => Question, (question) => question.answers)
+  question!: QuestionModel;
+
+  @OneToMany(() => AnswerOption, (answerOption) => answerOption.answer)
+  answerOptions: AnswerOptionModel[];
 }

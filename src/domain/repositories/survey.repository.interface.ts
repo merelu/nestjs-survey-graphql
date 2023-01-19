@@ -6,10 +6,7 @@ import {
 import { EntityManager } from 'typeorm';
 
 export interface ISurveyRepository {
-  create(
-    data: CreateSurveyModel,
-    conn?: EntityManager,
-  ): Promise<SurveyModel | null>;
+  create(data: CreateSurveyModel, conn?: EntityManager): Promise<SurveyModel>;
 
   findById(id: number, conn?: EntityManager): Promise<SurveyModel | null>;
 

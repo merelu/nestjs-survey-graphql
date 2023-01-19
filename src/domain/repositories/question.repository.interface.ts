@@ -3,15 +3,20 @@ import {
   QuestionModel,
   UpdateQuestionModel,
 } from '@domain/model/database/question';
-import { EntityManager } from 'typeorm';
+import { EntityManager, FindOptionsWhere } from 'typeorm';
 
 export interface IQuestionRepository {
   create(
     data: CreateQuestionModel,
     conn?: EntityManager,
-  ): Promise<QuestionModel | null>;
+  ): Promise<QuestionModel>;
 
   findById(id: number, conn?: EntityManager): Promise<QuestionModel | null>;
+
+  findOneByQueryWithRelation(
+    query: FindOptionsWhere<QuestionModel>,
+    relations: string[],
+  ): Promise<QuestionModel | null>;
 
   findAll(): Promise<QuestionModel[]>;
 

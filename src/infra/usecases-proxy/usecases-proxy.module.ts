@@ -1,8 +1,11 @@
 import { EnvironmentConfigModule } from '@infra/config/environment-config/environment-config.module';
+import { DatabaseAnswerOptionRepository } from '@infra/repositories/answer-option.repository';
+import { DatabaseAnswerRepository } from '@infra/repositories/answer.repository';
 import { DatabaseQuestionOptionRepository } from '@infra/repositories/question-option.repository';
 import { DatabaseQuestionRepository } from '@infra/repositories/question.repository';
 import { RepositoriesModule } from '@infra/repositories/repositories.module';
 import { DatabaseSurveyRepository } from '@infra/repositories/survey.repository';
+import { DatabaseUserSurveyRepository } from '@infra/repositories/user-survey.repository';
 import { DatabaseUserRepository } from '@infra/repositories/user.repository';
 import { ExceptionModule } from '@infra/services/exceptions/exception.module';
 import { ExceptionService } from '@infra/services/exceptions/exception.service';
@@ -11,10 +14,12 @@ import { DynamicModule } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { CreateQuestionOptionUseCases } from '@usecases/question-option/create-question-option.usecases';
 import { GetQuestionOptionUseCases } from '@usecases/question-option/get-question-option.usecases';
+import { AnswerQuestionUseCases } from '@usecases/question/answer-question.usecases';
 import { CreateQuestionUseCases } from '@usecases/question/create-question.usecases';
 import { GetQuestionUseCases } from '@usecases/question/get-question.usecases';
 import { CreateSurveyUseCases } from '@usecases/survey/create-survey.usecases';
 import { GetSurveyUseCases } from '@usecases/survey/get-survey.usecases';
+import { AnswerSurveyUseCases } from '@usecases/user/answer-survey.usecases';
 import { CreateUserUseCases } from '@usecases/user/create-user.usecases';
 import { UseCaseProxy } from './usecases-proxy';
 
@@ -35,6 +40,8 @@ export class UseCasesProxyModule {
   static CREATE_QUESTION_OPTION_USECASES_PROXY =
     'CreateQuestionOptionUseCasesProxy';
   static GET_QUESTION_OPTION_USECASES_PROXY = 'GetQuestionOptionUseCasesProxy';
+  static ANSWER_SURVEY_USECASES_PROXY = 'AnswerSurveyUseCasesProxy';
+  static ANSWER_QUESTION_USECASES_PROXY = 'AnswerQuestionUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -120,6 +127,52 @@ export class UseCasesProxyModule {
           useFactory: (questionOptionRepo: DatabaseQuestionOptionRepository) =>
             new UseCaseProxy(new GetQuestionOptionUseCases(questionOptionRepo)),
         },
+        {
+          inject: [
+            DatabaseSurveyRepository,
+            DatabaseUserSurveyRepository,
+            ExceptionService,
+          ],
+          provide: UseCasesProxyModule.ANSWER_SURVEY_USECASES_PROXY,
+          useFactory: (
+            surveyRepo: DatabaseSurveyRepository,
+            userSurveyRepo: DatabaseUserSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new AnswerSurveyUseCases(
+                surveyRepo,
+                userSurveyRepo,
+                exceptionService,
+              ),
+            ),
+        },
+        {
+          inject: [
+            DatabaseUserSurveyRepository,
+            DatabaseAnswerRepository,
+            DatabaseQuestionRepository,
+            DatabaseAnswerOptionRepository,
+            ExceptionService,
+          ],
+          provide: UseCasesProxyModule.ANSWER_QUESTION_USECASES_PROXY,
+          useFactory: (
+            userSurveyRepo: DatabaseUserSurveyRepository,
+            answerRepo: DatabaseAnswerRepository,
+            questionRepo: DatabaseQuestionRepository,
+            answerOptionRepo: DatabaseAnswerOptionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new AnswerQuestionUseCases(
+                userSurveyRepo,
+                answerRepo,
+                questionRepo,
+                answerOptionRepo,
+                exceptionService,
+              ),
+            ),
+        },
       ],
       exports: [
         UseCasesProxyModule.CREATE_USER_USECASES_PROXY,
@@ -129,6 +182,8 @@ export class UseCasesProxyModule {
         UseCasesProxyModule.GET_QUESTION_USECASES_PROXY,
         UseCasesProxyModule.CREATE_QUESTION_OPTION_USECASES_PROXY,
         UseCasesProxyModule.GET_QUESTION_OPTION_USECASES_PROXY,
+        UseCasesProxyModule.ANSWER_SURVEY_USECASES_PROXY,
+        UseCasesProxyModule.ANSWER_QUESTION_USECASES_PROXY,
       ],
     };
   }

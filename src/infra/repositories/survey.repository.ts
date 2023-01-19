@@ -18,18 +18,13 @@ export class DatabaseSurveyRepository implements ISurveyRepository {
   async create(
     data: CreateSurveyModel,
     conn?: EntityManager,
-  ): Promise<SurveyModel | null> {
+  ): Promise<SurveyModel> {
     const surveyEntity = this.toSurveyEntity(data);
-    let result: Survey | null = null;
     if (conn) {
-      result = await conn.getRepository(Survey).save(surveyEntity);
-    } else {
-      result = await this.surveyEntityRepository.save(surveyEntity);
+      const result = await conn.getRepository(Survey).save(surveyEntity);
+      return this.toSurvey(result);
     }
-
-    if (!result) {
-      return null;
-    }
+    const result = await this.surveyEntityRepository.save(surveyEntity);
 
     return this.toSurvey(result);
   }

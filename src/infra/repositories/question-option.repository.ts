@@ -17,39 +17,29 @@ export class DatabaseQuestionOptionRepository
     @InjectRepository(QuestionOption)
     private readonly questionOptionEntityRepository: Repository<QuestionOption>,
   ) {}
-  async getNextOrder(questionId: number): Promise<number> {
-    const raw = await this.questionOptionEntityRepository
-      .createQueryBuilder('question_option')
-      .select('coalesce(max(question_option.order) + 1,0)', 'maxOrder')
-      .where('question_id = :questionId', { questionId })
-      .getRawOne();
 
-    return raw.maxOrder;
-  }
   async create(
     data: CreateQuestionOptionModel,
-    conn?: EntityManager | undefined,
-  ): Promise<QuestionOptionModel | null> {
+    conn?: EntityManager,
+  ): Promise<QuestionOptionModel> {
     const questionOptionEntity = this.toQuestionOptionEntity(data);
-    let result: QuestionOption | null = null;
+
     if (conn) {
-      result = await conn
+      const result = await conn
         .getRepository(QuestionOption)
         .save(questionOptionEntity);
-    } else {
-      result = await this.questionOptionEntityRepository.save(
-        questionOptionEntity,
-      );
+      return this.toQuestionOption(result);
     }
-    if (!result) {
-      return null;
-    }
+    const result = await this.questionOptionEntityRepository.save(
+      questionOptionEntity,
+    );
+
     return this.toQuestionOption(result);
   }
 
   async findById(
     id: number,
-    conn?: EntityManager | undefined,
+    conn?: EntityManager,
   ): Promise<QuestionOptionModel | null> {
     let result: QuestionOption | null = null;
 
@@ -74,10 +64,20 @@ export class DatabaseQuestionOptionRepository
     return result.map((entity) => this.toQuestionOption(entity));
   }
 
+  async getNextOrder(questionId: number): Promise<number> {
+    const raw = await this.questionOptionEntityRepository
+      .createQueryBuilder('question_option')
+      .select('coalesce(max(question_option.order) + 1,0)', 'maxOrder')
+      .where('question_id = :questionId', { questionId })
+      .getRawOne();
+
+    return raw.maxOrder;
+  }
+
   async update(
     id: number,
     data: UpdateQuestionOptionModel,
-    conn?: EntityManager | undefined,
+    conn?: EntityManager,
   ): Promise<void> {
     if (conn) {
       await conn.getRepository(QuestionOptionModel).update({ id }, data);
@@ -110,7 +110,7 @@ export class DatabaseQuestionOptionRepository
     result.score = data.score;
     result.questionId = data.questionId;
     result.question = data.question;
-    result.answers = data.answers;
+    result.answerOptions = data.answerOptions;
     result.order = data.order;
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;

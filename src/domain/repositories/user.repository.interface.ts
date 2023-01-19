@@ -6,10 +6,7 @@ import {
 import { EntityManager } from 'typeorm';
 
 export interface IUserRepository {
-  create(
-    data: CreateUserModel,
-    conn?: EntityManager,
-  ): Promise<UserModel | null>;
+  create(data: CreateUserModel, conn?: EntityManager): Promise<UserModel>;
 
   findById(id: number, conn?: EntityManager): Promise<UserModel | null>;
 

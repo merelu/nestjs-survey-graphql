@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
+import { AnswerModel } from './answer';
 import { CommonModel } from './common';
 import { SurveyModel } from './survey';
 import { UserModel } from './user';
@@ -14,6 +15,7 @@ export class UserSurveyModel extends CommonModel implements IUserSurveyModel {
   user: UserModel;
   surveyId: number;
   survey: SurveyModel;
+  answers: AnswerModel[];
 }
 
 export class CreateUserSurveyModel extends PickType(UserSurveyModel, [

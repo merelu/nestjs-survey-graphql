@@ -2,6 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AnswerOptionType {
+  id: ID!
+  answerId: Float!
+  questionOptionId: Float!
+}
+
+type AnswerType {
+  id: ID!
+  questionId: Float!
+  userSurveyId: Float!
+  answerOptions: [AnswerOptionType!]!
+}
+
 type QuestionOptionType {
   id: ID!
   optionContent: String!
@@ -27,6 +40,12 @@ type SurveyType {
   questions: [QuestionType!]!
 }
 
+type UserSurveyType {
+  id: ID!
+  userId: Float!
+  surveyId: Float!
+}
+
 type UserType {
   id: ID!
   name: String!
@@ -44,6 +63,8 @@ type Mutation {
   createSurvey(creatSurveyInput: CreateSurveyInput!): SurveyType!
   createQuestion(createQuestionInput: CreateQuestionInput!): QuestionType!
   createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOptionType!
+  answerSurvey(answerSurveyInput: AnswerSurveyInput!): UserSurveyType!
+  answerQuestion(answerQuestionInput: AnswerQuestionInput!): AnswerType!
 }
 
 input CreateUserInput {
@@ -66,4 +87,15 @@ input CreateQuestionOptionInput {
   optionContent: String!
   score: Float!
   questionId: Float!
+}
+
+input AnswerSurveyInput {
+  userId: Float!
+  surveyId: Float!
+}
+
+input AnswerQuestionInput {
+  userSurveyId: Float!
+  questionId: Float!
+  questionOptionIds: [Int!]!
 }

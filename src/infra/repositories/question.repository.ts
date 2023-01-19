@@ -7,7 +7,7 @@ import { IQuestionRepository } from '@domain/repositories/question.repository.in
 import { Question } from '@infra/entities/question.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class DatabaseQuestionRepository implements IQuestionRepository {
@@ -16,36 +16,22 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     private readonly questionEntityRepository: Repository<Question>,
   ) {}
 
-  async getNextOrder(surveyId: number): Promise<number> {
-    const raw = await this.questionEntityRepository
-      .createQueryBuilder('question')
-      .select('coalesce(max(question.order) + 1,0)', 'maxOrder')
-      .where('survey_id = :surveyId', { surveyId })
-      .getRawOne();
-
-    return raw.maxOrder;
-  }
-
   async create(
     data: CreateQuestionModel,
-    conn?: EntityManager | undefined,
-  ): Promise<QuestionModel | null> {
+    conn?: EntityManager,
+  ): Promise<QuestionModel> {
     const questionEntity = this.toQuestionEntity(data);
-    let result: Question | null = null;
     if (conn) {
-      result = await conn.getRepository(Question).save(questionEntity);
-    } else {
-      result = await this.questionEntityRepository.save(questionEntity);
+      const result = await conn.getRepository(Question).save(questionEntity);
+      return this.toQuestion(result);
     }
-    if (!result) {
-      return null;
-    }
+    const result = await this.questionEntityRepository.save(questionEntity);
     return this.toQuestion(result);
   }
 
   async findById(
     id: number,
-    conn?: EntityManager | undefined,
+    conn?: EntityManager,
   ): Promise<QuestionModel | null> {
     let result: Question | null = null;
 
@@ -65,15 +51,41 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     return this.toQuestion(result);
   }
 
+  async findOneByQueryWithRelation(
+    query: FindOptionsWhere<QuestionModel>,
+    relations: string[],
+  ): Promise<QuestionModel | null> {
+    const result = await this.questionEntityRepository.findOne({
+      where: query,
+      relations,
+    });
+
+    if (!result) {
+      return null;
+    }
+
+    return this.toQuestion(result);
+  }
+
   async findAll(): Promise<QuestionModel[]> {
     const result = await this.questionEntityRepository.find();
     return result.map((entity) => this.toQuestion(entity));
   }
 
+  async getNextOrder(surveyId: number): Promise<number> {
+    const raw = await this.questionEntityRepository
+      .createQueryBuilder('question')
+      .select('coalesce(max(question.order) + 1,0)', 'maxOrder')
+      .where('survey_id = :surveyId', { surveyId })
+      .getRawOne();
+
+    return raw.maxOrder;
+  }
+
   async update(
     id: number,
     data: UpdateQuestionModel,
-    conn?: EntityManager | undefined,
+    conn?: EntityManager,
   ): Promise<void> {
     if (conn) {
       await conn.getRepository(Question).update({ id }, data);

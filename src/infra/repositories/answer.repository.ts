@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   DeleteResult,
   EntityManager,
-  InsertResult,
+  FindOptionsWhere,
   Repository,
   UpdateResult,
 } from 'typeorm';
@@ -20,28 +20,44 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
 
   async create(
     data: CreateAnswerModel,
-    conn?: EntityManager | undefined,
-  ): Promise<boolean> {
+    conn?: EntityManager,
+  ): Promise<AnswerModel> {
     const answerEntity = this.toAnswerEntity(data);
-    let result: InsertResult | null = null;
+
     if (conn) {
-      result = await conn.getRepository(Answer).upsert(answerEntity, {
-        skipUpdateIfNoValuesChanged: true,
-        conflictPaths: ['user_id', 'question_option_id'],
-      });
-    } else {
-      result = await this.answerEntityRepository.upsert(answerEntity, {
-        skipUpdateIfNoValuesChanged: true,
-        conflictPaths: ['user_id', 'question_option_id'],
-      });
+      const result = await conn.getRepository(Answer).save(answerEntity);
+      return this.toAnswer(result);
     }
-    if (result.raw.length === 0) {
-      return false;
+    const result = await this.answerEntityRepository.save(answerEntity);
+    return this.toAnswer(result);
+  }
+
+  async findOneByQueryWithRelation(
+    query: FindOptionsWhere<AnswerModel>,
+    relations?: string[],
+    conn?: EntityManager,
+  ): Promise<AnswerModel | null> {
+    let result: Answer | null = null;
+
+    if (conn) {
+      result = await conn
+        .getRepository(Answer)
+        .findOne({ where: query, relations });
+    } else {
+      result = await this.answerEntityRepository.findOne({
+        where: query,
+        relations,
+      });
     }
 
-    return true;
+    if (!result) {
+      return null;
+    }
+
+    return this.toAnswer(result);
   }
-  async delete(id: number, conn?: EntityManager | undefined): Promise<boolean> {
+
+  async delete(id: number, conn?: EntityManager): Promise<boolean> {
     let result: DeleteResult | null = null;
 
     if (conn) {
@@ -55,10 +71,7 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
     }
     return true;
   }
-  async softDelete(
-    id: number,
-    conn?: EntityManager | undefined,
-  ): Promise<boolean> {
+  async softDelete(id: number, conn?: EntityManager): Promise<boolean> {
     let result: UpdateResult | null = null;
 
     if (conn) {
@@ -77,10 +90,10 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
     const result = new AnswerModel();
 
     result.id = data.id;
-    result.questionOptionId = data.questionOptionId;
-    result.questionOption = data.questionOption;
-    result.userId = data.userId;
-    result.user = data.user;
+    result.questionId = data.questionId;
+    result.question = data.question;
+    result.userSurveyId = data.userSurveyId;
+    result.userSurvey = data.userSurvey;
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;
     result.deletedAt = data.deletedAt;
@@ -91,8 +104,8 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
   private toAnswerEntity(data: CreateAnswerModel): Answer {
     const result = new Answer();
 
-    result.questionOptionId = data.questionOptionId;
-    result.userId = data.userId;
+    result.userSurveyId = data.userSurveyId;
+    result.questionId = data.questionId;
 
     return result;
   }

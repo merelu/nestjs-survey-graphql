@@ -19,17 +19,14 @@ export class DatabaseUserRepository implements IUserRepository {
   async create(
     data: CreateUserModel,
     conn?: EntityManager,
-  ): Promise<UserModel | null> {
+  ): Promise<UserModel> {
     const userEntity = this.toUserEntity(data);
-    let result: User | null = null;
+
     if (conn) {
-      result = await conn.getRepository(User).save(userEntity);
-    } else {
-      result = await this.userEntityRepository.save(userEntity);
+      const result = await conn.getRepository(User).save(userEntity);
+      return this.toUser(result);
     }
-    if (!result) {
-      return null;
-    }
+    const result = await this.userEntityRepository.save(userEntity);
 
     return this.toUser(result);
   }
@@ -53,7 +50,7 @@ export class DatabaseUserRepository implements IUserRepository {
 
   async findByName(
     name: string,
-    conn?: EntityManager | undefined,
+    conn?: EntityManager,
   ): Promise<UserModel | null> {
     let result: UserModel | null = null;
 
@@ -107,8 +104,8 @@ export class DatabaseUserRepository implements IUserRepository {
 
     result.id = data.id;
     result.name = data.name;
-    result.answers = data.answers;
     result.userSurveys = data.userSurveys;
+
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;
     result.deletedAt = data.deletedAt;
