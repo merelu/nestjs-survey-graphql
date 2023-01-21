@@ -267,6 +267,8 @@ Response
 
 ### Delete
 
+설문지 삭제
+
 ```graphql
 mutation {
   deleteSurvey(id: 1)
@@ -323,7 +325,9 @@ Response
 }
 ```
 
-- Read
+### Read
+
+문항 가져오기 (by questionId)
 
 ```graphql
 query {
@@ -368,6 +372,8 @@ Response
 ```
 
 ### Update
+
+문항 수정
 
 ```graphql
 mutation {
@@ -417,7 +423,9 @@ Response
 }
 ```
 
-- Delete
+### Delete
+
+문항 삭제
 
 ```graphql
 mutation {
@@ -477,6 +485,8 @@ Response
 
 ### Read
 
+선택지 가져오기 (by questionOptionId)
+
 ```graphql
 query {
   questionOption(id: 1) {
@@ -504,6 +514,8 @@ Response
 ```
 
 ### Update
+
+선택지 수정
 
 ```graphql
 mutation {
@@ -539,6 +551,8 @@ Response
 
 ### Delete
 
+선택지 삭제
+
 ```graphql
 mutation {
   deleteQuestionOption(id: 1)
@@ -558,6 +572,8 @@ Response
 ## 답변 CRUD
 
 ### Create
+
+답변 작성
 
 ```graphql
 mutation {
@@ -607,7 +623,9 @@ Response
 }
 ```
 
-- Read
+### Read
+
+답변가져오기 (by answerId)
 
 ```graphql
 query {
@@ -650,6 +668,8 @@ Response
 
 ### Update
 
+답변 수정
+
 ```graphql
 mutation {
   updateAnswer(updateAnswerInput: { answerId: 1, questionOptionIds: [1, 2] }) {
@@ -691,7 +711,9 @@ Response
 }
 ```
 
-- Delete
+### Delete
+
+답변 삭제
 
 ```graphql
 mutation {
