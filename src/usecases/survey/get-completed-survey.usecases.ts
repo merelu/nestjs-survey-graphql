@@ -26,6 +26,16 @@ export class GetCompletedSurveyUseCases {
           'answers.answerOptions',
           'answers.answerOptions.questionOption',
         ],
+        {
+          survey: {
+            questions: {
+              order: 'ASC',
+              questionOptions: {
+                order: 'ASC',
+              },
+            },
+          },
+        },
       );
 
     if (!userSurvey) {

@@ -44,7 +44,7 @@ export class UpdateQuestionOptionOrderUseCases {
       questionId,
       conn,
     );
-    console.log(result);
+
     if (!result) {
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INVALID_PARAM,

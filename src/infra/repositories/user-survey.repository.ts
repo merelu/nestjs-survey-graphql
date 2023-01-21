@@ -6,7 +6,7 @@ import { IUserSurveyRepository } from '@domain/repositories/user-survey.reposito
 import { UserSurvey } from '@infra/entities/user-survey.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class DatabaseUserSurveyRepository implements IUserSurveyRepository {
@@ -25,11 +25,13 @@ export class DatabaseUserSurveyRepository implements IUserSurveyRepository {
 
   async findOneByQueryWithRelation(
     query: FindOptionsWhere<UserSurveyModel>,
-    relations?: string[],
+    relations: string[],
+    order: FindOptionsOrder<UserSurveyModel>,
   ): Promise<UserSurveyModel | null> {
     const result = await this.userSurveyEntityRepository.findOne({
       where: query,
       relations,
+      order,
     });
     if (!result) {
       return null;

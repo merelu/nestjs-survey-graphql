@@ -7,9 +7,9 @@ import { UseCasesProxyModule } from '@infra/usecases-proxy/usecases-proxy.module
 import { Inject } from '@nestjs/common';
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AnswerSurveyUseCases } from '@usecases/user/answer-survey.usecases';
-import { CompleteSurveyUseCases } from '@usecases/user/complete-survey.usecases';
-import { GetCompletedSurveyUseCases } from '@usecases/user/get-completed-survey.usecases';
+import { GetCompletedSurveyUseCases } from '@usecases/survey/get-completed-survey.usecases';
 import { AnswerSurveyInput } from './dto/answer-survey.input';
+import { CompleteSurveyUseCases } from '@usecases/survey/complete-survey.usecases';
 
 @Resolver(() => UserSurveyType)
 export class UserSurveyResolver {

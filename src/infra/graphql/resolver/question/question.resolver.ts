@@ -90,20 +90,17 @@ export class QuestionResolver {
   async updateQuestionOrder(
     @Args('updateQuestionOrderInput') data: UpdateQuestionOrderInput,
   ): Promise<QuestionType[]> {
-    console.log(data);
     const connection = this.dataSource.createQueryRunner();
     await connection.connect();
     await connection.startTransaction();
     try {
-      console.log('실행');
       const result = await this.updateQuestionOrderUseCasesProxy
         .getInstance()
         .execute(connection.manager, data.curQuestionId, data.nextQuestionId);
-      console.log(result);
+
       await connection.commitTransaction();
       return result;
     } catch (err) {
-      console.log(err);
       await connection.rollbackTransaction();
       throw err;
     } finally {

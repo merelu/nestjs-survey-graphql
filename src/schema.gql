@@ -48,8 +48,8 @@ type CheckCompleteSurveyType {
 
 type SurveyResultType {
   sumScore: Float
-  survey: SurveyType!
-  answers: [AnswerType!]!
+  survey: SurveyType
+  answers: [AnswerType!]
 }
 
 type UserSurveyType {

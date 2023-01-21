@@ -93,7 +93,6 @@ export class DatabaseAnswerOptionRepository implements IAnswerOptionRepository {
         .getRepository(AnswerOption)
         .softDelete({ answerId, questionOptionId: In(questionOptionids) });
 
-      console.log(result);
       if (result.affected && result.affected === questionOptionids.length) {
         return true;
       }

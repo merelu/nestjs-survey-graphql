@@ -2,14 +2,15 @@ import {
   CreateUserSurveyModel,
   UserSurveyModel,
 } from '@domain/model/database/user-survey';
-import { FindOptionsWhere } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere } from 'typeorm';
 
 export interface IUserSurveyRepository {
   create(data: CreateUserSurveyModel): Promise<UserSurveyModel>;
 
   findOneByQueryWithRelation(
     query: FindOptionsWhere<UserSurveyModel>,
-    relations?: string[],
+    relations: string[],
+    order?: FindOptionsOrder<UserSurveyModel>,
   ): Promise<UserSurveyModel | null>;
 
   getSumScoreByUserSurveyId(userSurveyId: number): Promise<number>;

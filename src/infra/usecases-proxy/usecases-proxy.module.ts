@@ -31,10 +31,10 @@ import { UseCaseProxy } from './usecases-proxy';
 import { GetAnswerUseCases } from '@usecases/answer/get-answer.usecases';
 import { UpdateAnswerUseCases } from '@usecases/answer/udpate-answer.usecases';
 import { DeleteAnswerUseCases } from '@usecases/answer/delete-answer.usecases';
-import { CompleteSurveyUseCases } from '@usecases/user/complete-survey.usecases';
-import { GetCompletedSurveyUseCases } from '@usecases/user/get-completed-survey.usecases';
+import { GetCompletedSurveyUseCases } from '@usecases/survey/get-completed-survey.usecases';
 import { UpdateQuestionOrderUseCases } from '@usecases/question/update-question-order.usecases';
 import { UpdateQuestionOptionOrderUseCases } from '@usecases/question-option/update-question-option-order.usecases';
+import { CompleteSurveyUseCases } from '@usecases/survey/complete-survey.usecases';
 
 @Module({
   imports: [

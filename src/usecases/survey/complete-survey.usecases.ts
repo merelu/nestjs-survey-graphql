@@ -20,7 +20,14 @@ export class CompleteSurveyUseCases {
         error_text: 'id에 해당하는 데이터가 없습니다.',
       });
     }
-    console.log(result);
+
+    if (!result.survey) {
+      throw this.exceptionService.apolloServerException({
+        error_code: CommonErrorCodeEnum.FORBIDDEN_REQUEST,
+        error_text: '삭제된 설문조사 입니다.',
+      });
+    }
+
     if (result.isDone) {
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INVALID_PARAM,
@@ -29,7 +36,6 @@ export class CompleteSurveyUseCases {
     }
 
     const allQuestions = result.survey.questions.map((i) => i.id);
-
     const allRespondQuestions = result.answers.map((i) => i.questionId);
     const inCompletedQuestionIds: number[] = [];
     const isDone = allQuestions.every((id) => {

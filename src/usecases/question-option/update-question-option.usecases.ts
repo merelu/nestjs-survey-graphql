@@ -47,7 +47,6 @@ export class UpdateQuestionOptionUseCases {
     try {
       await this.questionOptionRepository.update(questionOptionId, data, conn);
     } catch (err) {
-      console.log(err);
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INTERNAL_SERVER,
         error_text: '확인되지 않은 서버에러',

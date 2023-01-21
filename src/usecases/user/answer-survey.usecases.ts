@@ -18,7 +18,6 @@ export class AnswerSurveyUseCases {
       const result = await this.userSurveyRepository.create(data);
       return result;
     } catch (err) {
-      console.log(err);
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INVALID_PARAM,
         error_text: '이미 응시한 설문입니다.',

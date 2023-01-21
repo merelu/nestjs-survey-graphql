@@ -40,7 +40,7 @@ export class UpdateQuestionOrderUseCases {
 
   private async checkQuestion(questionId: number, conn?: EntityManager) {
     const result = await this.questionRepository.findOneById(questionId, conn);
-    console.log(result);
+
     if (!result) {
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INVALID_PARAM,
