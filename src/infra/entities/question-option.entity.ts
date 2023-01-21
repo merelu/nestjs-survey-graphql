@@ -1,11 +1,12 @@
 import { QuestionModel } from '@domain/model/database/question';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { CommonEntity } from './common';
 import { Question } from './question.entity';
 import { IQuestionOptionModel } from '@domain/model/database/question-option';
 import { AnswerOption } from './answer-option';
 import { AnswerOptionModel } from '@domain/model/database/answer-option';
 
+@Index('QuestionId', ['questionId'], {})
 @Entity()
 export class QuestionOption
   extends CommonEntity

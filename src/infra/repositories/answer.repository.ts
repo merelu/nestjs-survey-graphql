@@ -1,7 +1,6 @@
 import { CreateAnswerModel, AnswerModel } from '@domain/model/database/answer';
 import { IAnswerRepository } from '@domain/repositories/answer.repository.interface';
 import { Answer } from '@infra/entities/answer';
-import { UserSurvey } from '@infra/entities/user-survey.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {

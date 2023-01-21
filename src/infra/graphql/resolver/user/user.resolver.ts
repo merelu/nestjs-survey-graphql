@@ -3,7 +3,7 @@ import { UserType } from '@infra/graphql/type/user.type';
 import { UseCaseProxy } from '@infra/usecases-proxy/usecases-proxy';
 import { UseCasesProxyModule } from '@infra/usecases-proxy/usecases-proxy.module';
 import { Inject } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { CreateUserUseCases } from '@usecases/user/create-user.usecases';
 import { GetCompletedSurveyUseCases } from '@usecases/survey/get-completed-survey.usecases';
 import { CreateUserInput } from './dto/create-user.input';
