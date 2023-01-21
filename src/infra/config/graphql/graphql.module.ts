@@ -10,15 +10,6 @@ import { join } from 'path';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: true,
       playground: true,
-      formatError: (error) => {
-        return {
-          ...error,
-          extensions: {
-            code: error.extensions.code,
-          },
-        };
-        // return error;
-      },
     }),
   ],
 })

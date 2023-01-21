@@ -8,7 +8,6 @@ export class LoggerService extends Logger implements ILogger {
       super.debug(`[DEBUG] ${message}`, context);
     }
   }
-
   log(context: string, message: string) {
     super.log(`[INFO] ${message}`, context);
   }
