@@ -50,6 +50,19 @@ $ npm run start:dev
 
 ## API
 
+### 유저 C
+
+createUser
+
+```graphql
+mutation {
+  createUser(createUserInput: { name: "테스트유저" }) {
+    id
+    name
+  }
+}
+```
+
 ### 설문지 CRUD
 
 - Create
