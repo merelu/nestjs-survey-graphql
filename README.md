@@ -52,6 +52,9 @@ $ npm run start:dev
 
 # API
 
+- 유저생성(createUser) -> 설문지 응시(answerSurvey)를 진행해야
+  답변 및 설문 완료, 설문 완료 확인 과정을 진행할수 있습니다!
+
 ## 유저
 
 ### 유저 생성
