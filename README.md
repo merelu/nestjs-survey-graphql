@@ -2,6 +2,8 @@
 
 설문조사 서버 어플리케이션
 
+스키마 : [ERD_CLOUD_LINK](https://www.erdcloud.com/d/gnDoZaNLSBP4isJce)
+
 # 설치
 
 ```bash
@@ -851,4 +853,4 @@ Response
 
 # License
 
-Nest is [MIT licensed](LICENSE).
+Nest is MIT licensed.
