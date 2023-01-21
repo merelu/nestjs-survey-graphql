@@ -81,9 +81,11 @@ type Mutation {
   createQuestion(createQuestionInput: CreateQuestionInput!): QuestionType!
   updateQuestion(updateQuestionInput: UpdateQuestionInput!): QuestionType!
   deleteQuestion(id: Int!): String!
+  updateQuestionOrder(updateQuestionOrderInput: UpdateQuestionOrderInput!): [QuestionType!]!
   createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOptionType!
   updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput!): QuestionOptionType!
   deleteQuestionOption(id: Int!): String!
+  updateQuestionOptionOrder(updateQuestionOptionOrderInput: UpdateQuestionOptionOrderInput!): [QuestionOptionType!]!
   answerSurvey(answerSurveyInput: AnswerSurveyInput!): UserSurveyType!
   completeSurvey(userSurveyId: Int!): CheckCompleteSurveyType!
   createAnswer(createAnswerInput: CreateAnswerInput!): AnswerType!
@@ -120,6 +122,11 @@ input UpdateQuestionInput {
   questionId: Int!
 }
 
+input UpdateQuestionOrderInput {
+  curQuestionId: Int!
+  nextQuestionId: Int
+}
+
 input CreateQuestionOptionInput {
   optionContent: String!
   score: Float!
@@ -130,6 +137,11 @@ input UpdateQuestionOptionInput {
   optionContent: String
   score: Float
   questionOptionId: Int!
+}
+
+input UpdateQuestionOptionOrderInput {
+  curQuestionOptionId: Int!
+  nextQuestionOptionId: Int
 }
 
 input AnswerSurveyInput {

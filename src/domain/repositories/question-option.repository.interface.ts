@@ -18,11 +18,28 @@ export interface IQuestionOptionRepository {
 
   findAll(): Promise<QuestionOptionModel[]>;
 
+  findByQuestionIdWithRelation(
+    questionId: number,
+    conn?: EntityManager,
+  ): Promise<QuestionOptionModel[]>;
+
   getNextOrder(questionId: number): Promise<number>;
 
   update(
     id: number,
     data: UpdateQuestionOptionModel,
+    conn?: EntityManager,
+  ): Promise<void>;
+
+  udpateOrderById(
+    questionOptionId: number,
+    updateOrder: number,
+    conn?: EntityManager,
+  ): Promise<void>;
+
+  incrementOrdersByQuestionId(
+    questionId: number,
+    from: number,
     conn?: EntityManager,
   ): Promise<void>;
 

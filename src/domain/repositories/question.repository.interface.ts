@@ -25,11 +25,30 @@ export interface IQuestionRepository {
 
   findAll(): Promise<QuestionModel[]>;
 
+  findBySurveyIdWithRelation(
+    surveyId: number,
+    conn?: EntityManager,
+  ): Promise<QuestionModel[]>;
+
+  findBySurveyIdWithRelation(surveyId: number): Promise<QuestionModel[]>;
+
   getNextOrder(surveyId: number): Promise<number>;
 
   update(
     id: number,
     data: UpdateQuestionModel,
+    conn?: EntityManager,
+  ): Promise<void>;
+
+  udpateOrderById(
+    questionId: number,
+    updateOrder: number,
+    conn?: EntityManager,
+  ): Promise<void>;
+
+  incrementOrdersBySurveyId(
+    surveyId: number,
+    from: number,
     conn?: EntityManager,
   ): Promise<void>;
 

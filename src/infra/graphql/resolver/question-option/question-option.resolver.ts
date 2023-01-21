@@ -10,9 +10,11 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateQuestionOptionUseCases } from '@usecases/question-option/create-question-option.usecases';
 import { DeleteQuestionOptionUseCases } from '@usecases/question-option/delete-question-option.usecases';
 import { GetQuestionOptionUseCases } from '@usecases/question-option/get-question-option.usecases';
+import { UpdateQuestionOptionOrderUseCases } from '@usecases/question-option/update-question-option-order.usecases';
 import { UpdateQuestionOptionUseCases } from '@usecases/question-option/update-question-option.usecases';
 import { DataSource } from 'typeorm';
 import { CreateQuestionOptionInput } from './dto/create-question-option.input';
+import { UpdateQuestionOptionOrderInput } from './dto/update-question-option-order.input';
 import { UpdateQuestionOptionInput } from './dto/update-question-option.input';
 
 @Resolver(() => QuestionOptionType)
@@ -26,6 +28,8 @@ export class QuestionOptionResolver {
     private readonly deleteQuestionOptionUseCasesProxy: UseCaseProxy<DeleteQuestionOptionUseCases>,
     @Inject(UseCasesProxyModule.UPDATE_QUESTION_OPTION_USECASES_PROXY)
     private readonly updateQuestionOptionUseCasesProxy: UseCaseProxy<UpdateQuestionOptionUseCases>,
+    @Inject(UseCasesProxyModule.UPDATE_QUESTION_OPTION_ORDER_USECASES_PROXY)
+    private readonly updateQuestionOptionOrderUseCasesProxy: UseCaseProxy<UpdateQuestionOptionOrderUseCases>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -87,5 +91,32 @@ export class QuestionOptionResolver {
   async deleteQuestionOption(@Args('id', { type: () => Int }) id: number) {
     await this.deleteQuestionOptionUseCasesProxy.getInstance().execute(id);
     return 'Success';
+  }
+
+  @Mutation(() => [QuestionOptionType])
+  async updateQuestionOptionOrder(
+    @Args('updateQuestionOptionOrderInput')
+    data: UpdateQuestionOptionOrderInput,
+  ): Promise<QuestionOptionType[]> {
+    const connection = this.dataSource.createQueryRunner();
+    await connection.connect();
+    await connection.startTransaction();
+    try {
+      const result = await this.updateQuestionOptionOrderUseCasesProxy
+        .getInstance()
+        .execute(
+          connection.manager,
+          data.curQuestionOptionId,
+          data.nextQuestionOptionId,
+        );
+
+      await connection.commitTransaction();
+      return result;
+    } catch (err) {
+      await connection.rollbackTransaction();
+      throw err;
+    } finally {
+      await connection.release();
+    }
   }
 }

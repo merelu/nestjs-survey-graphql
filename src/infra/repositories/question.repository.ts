@@ -7,7 +7,12 @@ import { IQuestionRepository } from '@domain/repositories/question.repository.in
 import { Question } from '@infra/entities/question.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindOptionsWhere,
+  MoreThanOrEqual,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class DatabaseQuestionRepository implements IQuestionRepository {
@@ -77,7 +82,7 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
 
     return this.toQuestion(result);
   }
-
+  //순서 추가
   async findOneByQueryWithRelation(
     query: FindOptionsWhere<QuestionModel>,
     relations: string[],
@@ -96,6 +101,38 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
 
   async findAll(): Promise<QuestionModel[]> {
     const result = await this.questionEntityRepository.find();
+    return result.map((entity) => this.toQuestion(entity));
+  }
+
+  async findBySurveyIdWithRelation(
+    surveyId: number,
+    conn?: EntityManager,
+  ): Promise<QuestionModel[]> {
+    let result: Question[] = [];
+    if (conn) {
+      result = await conn.getRepository(Question).find({
+        where: { surveyId },
+        relations: ['questionOptions'],
+        order: {
+          order: 'ASC',
+          questionOptions: {
+            order: 'ASC',
+          },
+        },
+      });
+    } else {
+      result = await this.questionEntityRepository.find({
+        where: { surveyId },
+        relations: ['questionOptions'],
+        order: {
+          order: 'ASC',
+          questionOptions: {
+            order: 'ASC',
+          },
+        },
+      });
+    }
+
     return result.map((entity) => this.toQuestion(entity));
   }
 
@@ -120,6 +157,55 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
       await this.questionEntityRepository.update({ id }, data);
     }
   }
+
+  async udpateOrderById(
+    questionId: number,
+    updateOrder: number,
+    conn?: EntityManager,
+  ): Promise<void> {
+    if (conn) {
+      await conn.getRepository(Question).update(
+        {
+          id: questionId,
+        },
+        { order: updateOrder },
+      );
+    } else {
+      await this.questionEntityRepository.update(
+        {
+          id: questionId,
+        },
+        { order: updateOrder },
+      );
+    }
+  }
+
+  async incrementOrdersBySurveyId(
+    surveyId: number,
+    from: number,
+    conn?: EntityManager,
+  ): Promise<void> {
+    if (conn) {
+      await conn.getRepository(Question).update(
+        {
+          surveyId,
+          order: MoreThanOrEqual(from),
+        },
+        { order: () => '"order" + 1' },
+      );
+    } else {
+      await this.questionEntityRepository.update(
+        {
+          surveyId,
+          order: MoreThanOrEqual(from),
+        },
+        {
+          order: () => '"order" + 1',
+        },
+      );
+    }
+  }
+
   async delete(id: number): Promise<boolean> {
     const result = await this.questionEntityRepository.delete({ id });
     if (!result.affected) {
@@ -128,6 +214,7 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
 
     return true;
   }
+
   async softDelete(id: number): Promise<boolean> {
     const result = await this.questionEntityRepository.softDelete({ id });
     if (!result.affected) {

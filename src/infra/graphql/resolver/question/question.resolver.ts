@@ -10,9 +10,11 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateQuestionUseCases } from '@usecases/question/create-question.usecases';
 import { DeleteQuestionUseCases } from '@usecases/question/delete-question.usecases';
 import { GetQuestionUseCases } from '@usecases/question/get-question.usecases';
+import { UpdateQuestionOrderUseCases } from '@usecases/question/update-question-order.usecases';
 import { UpdateQuestionUseCases } from '@usecases/question/update-question.usecases';
 import { DataSource } from 'typeorm';
 import { CreateQuestionInput } from './dto/create-question.input';
+import { UpdateQuestionOrderInput } from './dto/update-question-order.input';
 import { UpdateQuestionInput } from './dto/update-question.input';
 
 @Resolver(() => QuestionType)
@@ -26,6 +28,8 @@ export class QuestionResolver {
     private readonly deleteQuestionUseCasesProxy: UseCaseProxy<DeleteQuestionUseCases>,
     @Inject(UseCasesProxyModule.UPDATE_QUESTION_USECASES_PROXY)
     private readonly updateQuestionUseCasesProxy: UseCaseProxy<UpdateQuestionUseCases>,
+    @Inject(UseCasesProxyModule.UPDATE_QUESTION_ORDER_USECASES_PROXY)
+    private readonly updateQuestionOrderUseCasesProxy: UseCaseProxy<UpdateQuestionOrderUseCases>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -80,5 +84,30 @@ export class QuestionResolver {
     await this.deleteQuestionUseCasesProxy.getInstance().execute(id);
 
     return 'Success';
+  }
+
+  @Mutation(() => [QuestionType])
+  async updateQuestionOrder(
+    @Args('updateQuestionOrderInput') data: UpdateQuestionOrderInput,
+  ): Promise<QuestionType[]> {
+    console.log(data);
+    const connection = this.dataSource.createQueryRunner();
+    await connection.connect();
+    await connection.startTransaction();
+    try {
+      console.log('실행');
+      const result = await this.updateQuestionOrderUseCasesProxy
+        .getInstance()
+        .execute(connection.manager, data.curQuestionId, data.nextQuestionId);
+      console.log(result);
+      await connection.commitTransaction();
+      return result;
+    } catch (err) {
+      console.log(err);
+      await connection.rollbackTransaction();
+      throw err;
+    } finally {
+      await connection.release();
+    }
   }
 }

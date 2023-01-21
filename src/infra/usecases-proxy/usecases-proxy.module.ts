@@ -33,6 +33,8 @@ import { UpdateAnswerUseCases } from '@usecases/answer/udpate-answer.usecases';
 import { DeleteAnswerUseCases } from '@usecases/answer/delete-answer.usecases';
 import { CompleteSurveyUseCases } from '@usecases/user/complete-survey.usecases';
 import { GetCompletedSurveyUseCases } from '@usecases/user/get-completed-survey.usecases';
+import { UpdateQuestionOrderUseCases } from '@usecases/question/update-question-order.usecases';
+import { UpdateQuestionOptionOrderUseCases } from '@usecases/question-option/update-question-option-order.usecases';
 
 @Module({
   imports: [
@@ -58,10 +60,14 @@ export class UseCasesProxyModule {
   static DELETE_SURVEY_USECASES_PROXY = 'DeleteSurveyUseCasesProxy';
 
   static UPDATE_QUESTION_USECASES_PROXY = 'UpdateQuestionUseCasesProxy';
+  static UPDATE_QUESTION_ORDER_USECASES_PROXY =
+    'UpdateQuestionOrderUseCasesProxy';
   static DELETE_QUESTION_USECASES_PROXY = 'DeleteQuestionUseCasesProxy';
 
   static UPDATE_QUESTION_OPTION_USECASES_PROXY =
     'UpdateQuestionOptionUseCasesProxy';
+  static UPDATE_QUESTION_OPTION_ORDER_USECASES_PROXY =
+    'UpdateQuestionOptionOrderUseCasesProxy';
   static DELETE_QUESTION_OPTION_USECASES_PROXY =
     'DeleteQuestionOptionUseCasesProxy';
 
@@ -360,6 +366,32 @@ export class UseCasesProxyModule {
               new GetCompletedSurveyUseCases(userSurveyRepo, exceptionService),
             ),
         },
+        {
+          inject: [DatabaseQuestionRepository, ExceptionService],
+          provide: UseCasesProxyModule.UPDATE_QUESTION_ORDER_USECASES_PROXY,
+          useFactory: (
+            questionRepo: DatabaseQuestionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateQuestionOrderUseCases(questionRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseQuestionOptionRepository, ExceptionService],
+          provide:
+            UseCasesProxyModule.UPDATE_QUESTION_OPTION_ORDER_USECASES_PROXY,
+          useFactory: (
+            questionOptionRepo: DatabaseQuestionOptionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateQuestionOptionOrderUseCases(
+                questionOptionRepo,
+                exceptionService,
+              ),
+            ),
+        },
       ],
       exports: [
         UseCasesProxyModule.CREATE_USER_USECASES_PROXY,
@@ -374,8 +406,10 @@ export class UseCasesProxyModule {
         UseCasesProxyModule.UPDATE_SURVEY_USECASES_PROXY,
         UseCasesProxyModule.DELETE_SURVEY_USECASES_PROXY,
         UseCasesProxyModule.UPDATE_QUESTION_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_QUESTION_ORDER_USECASES_PROXY,
         UseCasesProxyModule.DELETE_QUESTION_USECASES_PROXY,
         UseCasesProxyModule.UPDATE_QUESTION_OPTION_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_QUESTION_OPTION_ORDER_USECASES_PROXY,
         UseCasesProxyModule.DELETE_QUESTION_OPTION_USECASES_PROXY,
         UseCasesProxyModule.GET_ANSWER_USECASES_PROXY,
         UseCasesProxyModule.UPDATE_ANSWER_USECASES_PROXY,

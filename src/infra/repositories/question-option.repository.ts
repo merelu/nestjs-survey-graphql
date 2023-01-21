@@ -7,7 +7,7 @@ import { IQuestionOptionRepository } from '@domain/repositories/question-option.
 import { QuestionOption } from '@infra/entities/question-option.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, MoreThanOrEqual, Repository } from 'typeorm';
 
 @Injectable()
 export class DatabaseQuestionOptionRepository
@@ -64,6 +64,30 @@ export class DatabaseQuestionOptionRepository
     return result.map((entity) => this.toQuestionOption(entity));
   }
 
+  async findByQuestionIdWithRelation(
+    questionId: number,
+    conn?: EntityManager,
+  ): Promise<QuestionOptionModel[]> {
+    let result: QuestionOption[] = [];
+    if (conn) {
+      result = await conn.getRepository(QuestionOption).find({
+        where: { questionId },
+        order: {
+          order: 'ASC',
+        },
+      });
+    } else {
+      result = await this.questionOptionEntityRepository.find({
+        where: { questionId },
+        order: {
+          order: 'ASC',
+        },
+      });
+    }
+
+    return result.map((entity) => this.toQuestionOption(entity));
+  }
+
   async getNextOrder(questionId: number): Promise<number> {
     const raw = await this.questionOptionEntityRepository
       .createQueryBuilder('question_option')
@@ -85,6 +109,55 @@ export class DatabaseQuestionOptionRepository
       await this.questionOptionEntityRepository.update({ id }, data);
     }
   }
+
+  async udpateOrderById(
+    questionOptionId: number,
+    updateOrder: number,
+    conn?: EntityManager,
+  ): Promise<void> {
+    if (conn) {
+      await conn.getRepository(QuestionOption).update(
+        {
+          id: questionOptionId,
+        },
+        { order: updateOrder },
+      );
+    } else {
+      await this.questionOptionEntityRepository.update(
+        {
+          id: questionOptionId,
+        },
+        { order: updateOrder },
+      );
+    }
+  }
+
+  async incrementOrdersByQuestionId(
+    questionId: number,
+    from: number,
+    conn?: EntityManager,
+  ): Promise<void> {
+    if (conn) {
+      await conn.getRepository(QuestionOption).update(
+        {
+          questionId,
+          order: MoreThanOrEqual(from),
+        },
+        { order: () => '"order" + 1' },
+      );
+    } else {
+      await this.questionOptionEntityRepository.update(
+        {
+          questionId,
+          order: MoreThanOrEqual(from),
+        },
+        {
+          order: () => '"order" + 1',
+        },
+      );
+    }
+  }
+
   async delete(id: number): Promise<boolean> {
     const result = await this.questionOptionEntityRepository.delete({ id });
     if (!result.affected) {
