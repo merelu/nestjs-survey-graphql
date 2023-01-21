@@ -1,15 +1,14 @@
 {
   "name": "maumlab-survey-test",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Suvey Nestjs Server (feat. graphql, postgresql)",
+  "author": "merelu",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
     "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:prod": "node dist/main"
+    "start:dev": "nest start --watch"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.7",

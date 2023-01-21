@@ -1,34 +1,33 @@
-## Description
+## 설명
 
 설문조사 서버 어플리케이션
 
-## Installation
+## 설치
 
 ```bash
 $ npm install
 ```
 
-## Env
+## 환경변수
 
-환경설정 루트에 .env 파일 추가
+환경설정 루트경로에 .env 파일 추가
 
 ```bash
-#Server
 DATABASE_HOST=localhost
 DATABASE_PORT=5433
-DATABASE_USER=
-DATABASE_PASSWORD=
-DATABASE_NAME=
+DATABASE_USER=postgres
+DATABASE_PASSWORD=maum
+DATABASE_NAME=maumlab
 DATABASE_SCHEMA=public
 DATABASE_SYNCHRONIZE=true
 
 #DB
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_DB=
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=maum
+POSTGRES_DB=maumlab
 ```
 
-## Running Docker
+## 도커 실행
 
 PostgreSQL Docker 환경
 
@@ -39,7 +38,7 @@ $ docker-compose up -d
 $ docker-compose down
 ```
 
-## Running the app
+## 서버 실행
 
 ```bash
 # development
@@ -47,22 +46,124 @@ $ npm run start
 
 # watch mode
 $ npm run start:dev
-
-# production mode
-$ npm run start:prod
 ```
 
-## Test
+## API
 
-```bash
-# unit tests
-$ npm run test
+### 설문지 CRUD
 
-# e2e tests
-$ npm run test:e2e
+- Create
 
-# test coverage
-$ npm run test:cov
+```graphql
+
+```
+
+- Read
+
+```graphql
+
+```
+
+- Update
+
+```graphql
+
+```
+
+- Delete
+
+```graphql
+
+```
+
+### 문항 CRUD
+
+- Create
+
+```graphql
+
+```
+
+- Read
+
+```graphql
+
+```
+
+- Update
+
+```graphql
+
+```
+
+- Delete
+
+```graphql
+
+```
+
+### 선택지 CRUD
+
+- Create
+
+```graphql
+
+```
+
+- Read
+
+```graphql
+
+```
+
+- Update
+
+```graphql
+
+```
+
+- Delete
+
+```graphql
+
+```
+
+### 답변 CRUD
+
+- Create
+
+```graphql
+
+```
+
+- Read
+
+```graphql
+
+```
+
+- Update
+
+```graphql
+
+```
+
+- Delete
+
+```graphql
+
+```
+
+### 설문지 완료
+
+```graphql
+
+```
+
+### 완료된 설문지 확인
+
+```graphql
+
 ```
 
 ## License
