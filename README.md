@@ -12,7 +12,7 @@ $ npm install
 
 # 환경변수
 
-루트경로에 .env 파일 추가
+프로젝트 루트 경로에 .env 파일 추가
 
 ```bash
 DATABASE_HOST=localhost
