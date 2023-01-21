@@ -6,11 +6,13 @@ import { UserModel } from './user';
 
 export interface IUserSurveyModel {
   id: number;
+  isDone: boolean;
   userId: number;
   surveyId: number;
 }
 
 export class UserSurveyModel extends CommonModel implements IUserSurveyModel {
+  isDone: boolean;
   userId: number;
   user: UserModel;
   surveyId: number;

@@ -8,7 +8,7 @@ import { EntityManager } from 'typeorm';
 export interface IUserRepository {
   create(data: CreateUserModel, conn?: EntityManager): Promise<UserModel>;
 
-  findById(id: number, conn?: EntityManager): Promise<UserModel | null>;
+  findOneById(id: number, conn?: EntityManager): Promise<UserModel | null>;
 
   findByName(name: string, conn?: EntityManager): Promise<UserModel | null>;
 

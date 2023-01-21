@@ -11,6 +11,9 @@ import { User } from './user.entity';
 @Entity()
 @Unique(['userId', 'surveyId'])
 export class UserSurvey extends CommonEntity implements IUserSurveyModel {
+  @Column({ type: 'boolean', nullable: false, default: false })
+  isDone: boolean;
+
   @Column({ type: 'integer' })
   userId!: number;
 

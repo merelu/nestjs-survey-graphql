@@ -2,29 +2,30 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type AnswerOptionType {
-  id: ID!
-  answerId: Float!
-  questionOptionId: Float!
-}
-
-type AnswerType {
-  id: ID!
-  questionId: Float!
-  userSurveyId: Float!
-  answerOptions: [AnswerOptionType!]!
-}
-
 type QuestionOptionType {
-  id: ID!
+  id: Int!
   optionContent: String!
   score: Float!
   order: Float!
   questionId: Float!
 }
 
+type AnswerOptionType {
+  id: Int!
+  answerId: Float!
+  questionOptionId: Float!
+  questionOption: QuestionOptionType
+}
+
+type AnswerType {
+  id: Int!
+  questionId: Float!
+  userSurveyId: Float!
+  answerOptions: [AnswerOptionType!]!
+}
+
 type QuestionType {
-  id: ID!
+  id: Int!
   questionContent: String!
   allowMultipleAnswers: Boolean!
   surveyId: Float!
@@ -33,38 +34,62 @@ type QuestionType {
 }
 
 type SurveyType {
-  id: ID!
+  id: Int!
   title: String!
   description: String!
   footer: String!
   questions: [QuestionType!]!
 }
 
+type CheckCompleteSurveyType {
+  isDone: Boolean!
+  inCompletedQuestionIds: [Float!]!
+}
+
+type CompletedSurveyResultType {
+  sumScore: Float!
+  survey: SurveyType!
+  answers: [AnswerType!]!
+}
+
 type UserSurveyType {
-  id: ID!
+  id: Int!
+  isDone: Boolean!
   userId: Float!
   surveyId: Float!
 }
 
 type UserType {
-  id: ID!
+  id: Int!
   name: String!
 }
 
 type Query {
+  testQuery(userSurveyId: Int!): String!
   survey(id: Int!): SurveyType!
   surveys: [SurveyType!]!
   question(id: Int!): QuestionType!
   questionOption(id: Int!): QuestionOptionType!
+  getCompletedSurveyResult(userSurveyId: Int!): CompletedSurveyResultType!
+  answer(id: Int!): AnswerType!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): UserType!
   createSurvey(creatSurveyInput: CreateSurveyInput!): SurveyType!
+  updateSurvey(updateSurveyInput: UpdateSurveyInput!): SurveyType!
+  deleteSurvey(id: Int!): String!
   createQuestion(createQuestionInput: CreateQuestionInput!): QuestionType!
+  updateQuestion(updateQuestionInput: UpdateQuestionInput!): QuestionType!
+  deleteQuestion(id: Int!): String!
   createQuestionOption(createQuestionOptionInput: CreateQuestionOptionInput!): QuestionOptionType!
+  updateQuestionOption(updateQuestionOptionInput: UpdateQuestionOptionInput!): QuestionOptionType!
+  deleteQuestionOption(id: Int!): String!
   answerSurvey(answerSurveyInput: AnswerSurveyInput!): UserSurveyType!
-  answerQuestion(answerQuestionInput: AnswerQuestionInput!): AnswerType!
+  completeSurvey(userSurveyId: Int!): CheckCompleteSurveyType!
+  createAnswer(createAnswerInput: CreateAnswerInput!): AnswerType!
+  updateAnswer(updateAnswerInput: UpdateAnswerInput!): AnswerType!
+  deleteAnswer(id: Int!): String!
 }
 
 input CreateUserInput {
@@ -77,10 +102,23 @@ input CreateSurveyInput {
   footer: String!
 }
 
+input UpdateSurveyInput {
+  title: String
+  description: String
+  footer: String
+  surveyId: Int!
+}
+
 input CreateQuestionInput {
   questionContent: String!
   allowMultipleAnswers: Boolean!
   surveyId: Float!
+}
+
+input UpdateQuestionInput {
+  questionContent: String
+  allowMultipleAnswers: Boolean
+  questionId: Int!
 }
 
 input CreateQuestionOptionInput {
@@ -89,13 +127,24 @@ input CreateQuestionOptionInput {
   questionId: Float!
 }
 
+input UpdateQuestionOptionInput {
+  optionContent: String
+  score: Float
+  questionOptionId: Int!
+}
+
 input AnswerSurveyInput {
   userId: Float!
   surveyId: Float!
 }
 
-input AnswerQuestionInput {
+input CreateAnswerInput {
   userSurveyId: Float!
   questionId: Float!
+  questionOptionIds: [Int!]!
+}
+
+input UpdateAnswerInput {
+  answerId: Int!
   questionOptionIds: [Int!]!
 }

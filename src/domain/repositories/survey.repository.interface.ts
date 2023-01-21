@@ -8,9 +8,9 @@ import { EntityManager } from 'typeorm';
 export interface ISurveyRepository {
   create(data: CreateSurveyModel, conn?: EntityManager): Promise<SurveyModel>;
 
-  findById(id: number, conn?: EntityManager): Promise<SurveyModel | null>;
+  findOneById(id: number, conn?: EntityManager): Promise<SurveyModel | null>;
 
-  findDetailById(id: number): Promise<SurveyModel | null>;
+  findDetailById(id: number, conn?: EntityManager): Promise<SurveyModel | null>;
 
   findAll(): Promise<SurveyModel[]>;
 

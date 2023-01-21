@@ -3,8 +3,9 @@ import { UserType } from '@infra/graphql/type/user.type';
 import { UseCaseProxy } from '@infra/usecases-proxy/usecases-proxy';
 import { UseCasesProxyModule } from '@infra/usecases-proxy/usecases-proxy.module';
 import { Inject } from '@nestjs/common';
-import { Args, Mutation, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateUserUseCases } from '@usecases/user/create-user.usecases';
+import { GetCompletedSurveyUseCases } from '@usecases/user/get-completed-survey.usecases';
 import { CreateUserInput } from './dto/create-user.input';
 
 @Resolver(() => UserType)
@@ -12,6 +13,8 @@ export class UserResolver {
   constructor(
     @Inject(UseCasesProxyModule.CREATE_USER_USECASES_PROXY)
     private readonly createUserUseCasesProxy: UseCaseProxy<CreateUserUseCases>,
+    @Inject(UseCasesProxyModule.GET_COMPLETED_SURVEY_USECASES_PROXY)
+    private readonly getCompletedSurveyUseCasesProxy: UseCaseProxy<GetCompletedSurveyUseCases>,
   ) {}
 
   @Mutation(() => UserType)
@@ -26,5 +29,10 @@ export class UserResolver {
       .execute(newUser);
 
     return result;
+  }
+
+  @Query(() => String)
+  async testQuery(@Args('userSurveyId', { type: () => Int }) id: number) {
+    await this.getCompletedSurveyUseCasesProxy.getInstance().execute(id);
   }
 }

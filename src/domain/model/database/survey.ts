@@ -1,4 +1,4 @@
-import { PickType } from '@nestjs/mapped-types';
+import { PartialType, PickType } from '@nestjs/mapped-types';
 import { CommonModel } from './common';
 import { QuestionModel } from './question';
 import { UserSurveyModel } from './user-survey';
@@ -25,4 +25,4 @@ export class CreateSurveyModel extends PickType(SurveyModel, [
   'footer',
 ] as const) {}
 
-export class UpdateSurveyModel extends CreateSurveyModel {}
+export class UpdateSurveyModel extends PartialType(CreateSurveyModel) {}

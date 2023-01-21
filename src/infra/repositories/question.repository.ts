@@ -29,16 +29,14 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     return this.toQuestion(result);
   }
 
-  async findById(
+  async findOneById(
     id: number,
     conn?: EntityManager,
   ): Promise<QuestionModel | null> {
     let result: Question | null = null;
 
     if (conn) {
-      result = await conn
-        .getRepository(Question)
-        .findOneOrFail({ where: { id } });
+      result = await conn.getRepository(Question).findOne({ where: { id } });
     } else {
       result = await this.questionEntityRepository.findOne({
         where: { id },
@@ -48,6 +46,35 @@ export class DatabaseQuestionRepository implements IQuestionRepository {
     if (!result) {
       return null;
     }
+    return this.toQuestion(result);
+  }
+
+  async findDetailById(
+    id: number,
+    conn?: EntityManager,
+  ): Promise<QuestionModel | null> {
+    let result: Question | null = null;
+    if (conn) {
+      result = await conn
+        .getRepository(Question)
+        .createQueryBuilder('question')
+        .where('question.id = :id', { id })
+        .leftJoinAndSelect('question.questionOptions', 'questionOptions')
+        .orderBy('questionOptions.order', 'ASC')
+        .getOne();
+    } else {
+      result = await this.questionEntityRepository
+        .createQueryBuilder('question')
+        .where('question.id = :id', { id })
+        .leftJoinAndSelect('question.questionOptions', 'questionOptions')
+        .orderBy('questionOptions.order', 'ASC')
+        .getOne();
+    }
+
+    if (!result) {
+      return null;
+    }
+
     return this.toQuestion(result);
   }
 

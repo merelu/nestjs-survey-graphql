@@ -12,6 +12,10 @@ export interface IUserSurveyRepository {
     relations?: string[],
   ): Promise<UserSurveyModel | null>;
 
+  getSumScoreByUserSurveyId(userSurveyId: number): Promise<number>;
+
+  updateIsDone(id: number, isDone: boolean): Promise<void>;
+
   delete(id: number): Promise<boolean>;
 
   softDelete(id: number): Promise<boolean>;

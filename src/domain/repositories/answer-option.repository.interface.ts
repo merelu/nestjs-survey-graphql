@@ -18,4 +18,10 @@ export interface IAnswerOptionRepository {
   delete(id: number): Promise<boolean>;
 
   softDelete(id: number): Promise<boolean>;
+
+  softDeleteMany(
+    answerId: number,
+    questionOptionids: number[],
+    conn?: EntityManager,
+  ): Promise<boolean>;
 }

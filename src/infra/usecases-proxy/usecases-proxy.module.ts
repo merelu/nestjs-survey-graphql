@@ -13,15 +13,26 @@ import { LoggerModule } from '@infra/services/logger/logger.module';
 import { DynamicModule } from '@nestjs/common';
 import { Module } from '@nestjs/common';
 import { CreateQuestionOptionUseCases } from '@usecases/question-option/create-question-option.usecases';
+import { DeleteQuestionOptionUseCases } from '@usecases/question-option/delete-question-option.usecases';
 import { GetQuestionOptionUseCases } from '@usecases/question-option/get-question-option.usecases';
-import { AnswerQuestionUseCases } from '@usecases/question/answer-question.usecases';
+import { UpdateQuestionOptionUseCases } from '@usecases/question-option/update-question-option.usecases';
+import { CreateAnswerUseCases } from '@usecases/answer/create-answer.usecases';
 import { CreateQuestionUseCases } from '@usecases/question/create-question.usecases';
+import { DeleteQuestionUseCases } from '@usecases/question/delete-question.usecases';
 import { GetQuestionUseCases } from '@usecases/question/get-question.usecases';
+import { UpdateQuestionUseCases } from '@usecases/question/update-question.usecases';
 import { CreateSurveyUseCases } from '@usecases/survey/create-survey.usecases';
+import { DeleteSurveyUseCases } from '@usecases/survey/delete-survey.usecases';
 import { GetSurveyUseCases } from '@usecases/survey/get-survey.usecases';
+import { UpdateSurveyUseCases } from '@usecases/survey/update-survey.usecases';
 import { AnswerSurveyUseCases } from '@usecases/user/answer-survey.usecases';
 import { CreateUserUseCases } from '@usecases/user/create-user.usecases';
 import { UseCaseProxy } from './usecases-proxy';
+import { GetAnswerUseCases } from '@usecases/answer/get-answer.usecases';
+import { UpdateAnswerUseCases } from '@usecases/answer/udpate-answer.usecases';
+import { DeleteAnswerUseCases } from '@usecases/answer/delete-answer.usecases';
+import { CompleteSurveyUseCases } from '@usecases/user/complete-survey.usecases';
+import { GetCompletedSurveyUseCases } from '@usecases/user/get-completed-survey.usecases';
 
 @Module({
   imports: [
@@ -41,7 +52,26 @@ export class UseCasesProxyModule {
     'CreateQuestionOptionUseCasesProxy';
   static GET_QUESTION_OPTION_USECASES_PROXY = 'GetQuestionOptionUseCasesProxy';
   static ANSWER_SURVEY_USECASES_PROXY = 'AnswerSurveyUseCasesProxy';
-  static ANSWER_QUESTION_USECASES_PROXY = 'AnswerQuestionUseCasesProxy';
+  static CREATE_ANSWER_USECASES_PROXY = 'CreateAnswerUseCasesProxy';
+
+  static UPDATE_SURVEY_USECASES_PROXY = 'UpdateSurveyUseCasesProxy';
+  static DELETE_SURVEY_USECASES_PROXY = 'DeleteSurveyUseCasesProxy';
+
+  static UPDATE_QUESTION_USECASES_PROXY = 'UpdateQuestionUseCasesProxy';
+  static DELETE_QUESTION_USECASES_PROXY = 'DeleteQuestionUseCasesProxy';
+
+  static UPDATE_QUESTION_OPTION_USECASES_PROXY =
+    'UpdateQuestionOptionUseCasesProxy';
+  static DELETE_QUESTION_OPTION_USECASES_PROXY =
+    'DeleteQuestionOptionUseCasesProxy';
+
+  static GET_ANSWER_USECASES_PROXY = 'GetAnswerUseCasesProxy';
+  static UPDATE_ANSWER_USECASES_PROXY = 'UpdateAnswerUseCasesProxy';
+  static DELETE_ANSWER_USECASES_PROXY = 'DeleteAnswerUseCasesProxy';
+
+  static COMPLETE_SURVEY_USECASES_PROXY = 'CompleteSurveyUseCasesProxy';
+  static GET_COMPLETED_SURVEY_USECASES_PROXY =
+    'GetCompletedSurveyUseCasesProxy';
 
   static register(): DynamicModule {
     return {
@@ -59,10 +89,15 @@ export class UseCasesProxyModule {
             ),
         },
         {
-          inject: [DatabaseSurveyRepository],
+          inject: [DatabaseSurveyRepository, ExceptionService],
           provide: UseCasesProxyModule.GET_SURVEY_USECASES_PROXY,
-          useFactory: (surveyRepo: DatabaseSurveyRepository) =>
-            new UseCaseProxy(new GetSurveyUseCases(surveyRepo)),
+          useFactory: (
+            surveyRepo: DatabaseSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new GetSurveyUseCases(surveyRepo, exceptionService),
+            ),
         },
         {
           inject: [DatabaseSurveyRepository, ExceptionService],
@@ -96,10 +131,15 @@ export class UseCasesProxyModule {
             ),
         },
         {
-          inject: [DatabaseQuestionRepository],
+          inject: [DatabaseQuestionRepository, ExceptionService],
           provide: UseCasesProxyModule.GET_QUESTION_USECASES_PROXY,
-          useFactory: (questionRepo: DatabaseQuestionRepository) =>
-            new UseCaseProxy(new GetQuestionUseCases(questionRepo)),
+          useFactory: (
+            questionRepo: DatabaseQuestionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new GetQuestionUseCases(questionRepo, exceptionService),
+            ),
         },
         {
           inject: [
@@ -122,10 +162,18 @@ export class UseCasesProxyModule {
             ),
         },
         {
-          inject: [DatabaseQuestionOptionRepository],
+          inject: [DatabaseQuestionOptionRepository, ExceptionService],
           provide: UseCasesProxyModule.GET_QUESTION_OPTION_USECASES_PROXY,
-          useFactory: (questionOptionRepo: DatabaseQuestionOptionRepository) =>
-            new UseCaseProxy(new GetQuestionOptionUseCases(questionOptionRepo)),
+          useFactory: (
+            questionOptionRepo: DatabaseQuestionOptionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new GetQuestionOptionUseCases(
+                questionOptionRepo,
+                exceptionService,
+              ),
+            ),
         },
         {
           inject: [
@@ -155,7 +203,7 @@ export class UseCasesProxyModule {
             DatabaseAnswerOptionRepository,
             ExceptionService,
           ],
-          provide: UseCasesProxyModule.ANSWER_QUESTION_USECASES_PROXY,
+          provide: UseCasesProxyModule.CREATE_ANSWER_USECASES_PROXY,
           useFactory: (
             userSurveyRepo: DatabaseUserSurveyRepository,
             answerRepo: DatabaseAnswerRepository,
@@ -164,13 +212,152 @@ export class UseCasesProxyModule {
             exceptionService: ExceptionService,
           ) =>
             new UseCaseProxy(
-              new AnswerQuestionUseCases(
+              new CreateAnswerUseCases(
                 userSurveyRepo,
                 answerRepo,
                 questionRepo,
                 answerOptionRepo,
                 exceptionService,
               ),
+            ),
+        },
+        {
+          inject: [DatabaseSurveyRepository, ExceptionService],
+          provide: UseCasesProxyModule.UPDATE_SURVEY_USECASES_PROXY,
+          useFactory: (
+            surveyRepo: DatabaseSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateSurveyUseCases(surveyRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseSurveyRepository, ExceptionService],
+          provide: UseCasesProxyModule.DELETE_SURVEY_USECASES_PROXY,
+          useFactory: (
+            surveyRepo: DatabaseSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new DeleteSurveyUseCases(surveyRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseQuestionRepository, ExceptionService],
+          provide: UseCasesProxyModule.UPDATE_QUESTION_USECASES_PROXY,
+          useFactory: (
+            questionRepo: DatabaseQuestionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateQuestionUseCases(questionRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseQuestionRepository, ExceptionService],
+          provide: UseCasesProxyModule.DELETE_QUESTION_USECASES_PROXY,
+          useFactory: (
+            questionRepo: DatabaseQuestionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new DeleteQuestionUseCases(questionRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseQuestionOptionRepository, ExceptionService],
+          provide: UseCasesProxyModule.UPDATE_QUESTION_OPTION_USECASES_PROXY,
+          useFactory: (
+            questionOptionRepo: DatabaseQuestionOptionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateQuestionOptionUseCases(
+                questionOptionRepo,
+                exceptionService,
+              ),
+            ),
+        },
+        {
+          inject: [DatabaseQuestionOptionRepository, ExceptionService],
+          provide: UseCasesProxyModule.DELETE_QUESTION_OPTION_USECASES_PROXY,
+          useFactory: (
+            questionOptionRepo: DatabaseQuestionOptionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new DeleteQuestionOptionUseCases(
+                questionOptionRepo,
+                exceptionService,
+              ),
+            ),
+        },
+        {
+          inject: [DatabaseAnswerRepository, ExceptionService],
+          provide: UseCasesProxyModule.GET_ANSWER_USECASES_PROXY,
+          useFactory: (
+            answerRepo: DatabaseAnswerRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new GetAnswerUseCases(answerRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [
+            DatabaseAnswerRepository,
+            DatabaseAnswerOptionRepository,
+            DatabaseQuestionRepository,
+            ExceptionService,
+          ],
+          provide: UseCasesProxyModule.UPDATE_ANSWER_USECASES_PROXY,
+          useFactory: (
+            answerRepo: DatabaseAnswerRepository,
+            answerOptionRepo: DatabaseAnswerOptionRepository,
+            questionRepo: DatabaseQuestionRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new UpdateAnswerUseCases(
+                answerRepo,
+                answerOptionRepo,
+                questionRepo,
+                exceptionService,
+              ),
+            ),
+        },
+        {
+          inject: [DatabaseAnswerRepository, ExceptionService],
+          provide: UseCasesProxyModule.DELETE_ANSWER_USECASES_PROXY,
+          useFactory: (
+            answerRepo: DatabaseAnswerRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new DeleteAnswerUseCases(answerRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseUserSurveyRepository, ExceptionService],
+          provide: UseCasesProxyModule.COMPLETE_SURVEY_USECASES_PROXY,
+          useFactory: (
+            userSurveyRepo: DatabaseUserSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new CompleteSurveyUseCases(userSurveyRepo, exceptionService),
+            ),
+        },
+        {
+          inject: [DatabaseUserSurveyRepository, ExceptionService],
+          provide: UseCasesProxyModule.GET_COMPLETED_SURVEY_USECASES_PROXY,
+          useFactory: (
+            userSurveyRepo: DatabaseUserSurveyRepository,
+            exceptionService: ExceptionService,
+          ) =>
+            new UseCaseProxy(
+              new GetCompletedSurveyUseCases(userSurveyRepo, exceptionService),
             ),
         },
       ],
@@ -183,7 +370,18 @@ export class UseCasesProxyModule {
         UseCasesProxyModule.CREATE_QUESTION_OPTION_USECASES_PROXY,
         UseCasesProxyModule.GET_QUESTION_OPTION_USECASES_PROXY,
         UseCasesProxyModule.ANSWER_SURVEY_USECASES_PROXY,
-        UseCasesProxyModule.ANSWER_QUESTION_USECASES_PROXY,
+        UseCasesProxyModule.CREATE_ANSWER_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_SURVEY_USECASES_PROXY,
+        UseCasesProxyModule.DELETE_SURVEY_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_QUESTION_USECASES_PROXY,
+        UseCasesProxyModule.DELETE_QUESTION_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_QUESTION_OPTION_USECASES_PROXY,
+        UseCasesProxyModule.DELETE_QUESTION_OPTION_USECASES_PROXY,
+        UseCasesProxyModule.GET_ANSWER_USECASES_PROXY,
+        UseCasesProxyModule.UPDATE_ANSWER_USECASES_PROXY,
+        UseCasesProxyModule.DELETE_ANSWER_USECASES_PROXY,
+        UseCasesProxyModule.COMPLETE_SURVEY_USECASES_PROXY,
+        UseCasesProxyModule.GET_COMPLETED_SURVEY_USECASES_PROXY,
       ],
     };
   }

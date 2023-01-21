@@ -37,6 +37,26 @@ export class DatabaseUserSurveyRepository implements IUserSurveyRepository {
     return this.toUserSurvey(result);
   }
 
+  async getSumScoreByUserSurveyId(userSurveyId: number): Promise<number> {
+    const result = await this.userSurveyEntityRepository
+      .createQueryBuilder('userSurvey')
+      .where('userSurvey.id = :userSurveyId', { userSurveyId })
+      .select('sum(questionOption.score)', 'sum')
+      .leftJoin('userSurvey.answers', 'answers')
+      .leftJoin('answers.answerOptions', 'answerOptions')
+      .leftJoin('answerOptions.questionOption', 'questionOption')
+      .groupBy('userSurvey.id')
+      .getRawOne();
+
+    return result.sum;
+  }
+
+  async updateIsDone(id: number, isDone: boolean): Promise<void> {
+    await this.userSurveyEntityRepository.update(id, {
+      isDone,
+    });
+  }
+
   async delete(id: number): Promise<boolean> {
     const result = await this.userSurveyEntityRepository.delete({
       id,
@@ -59,6 +79,7 @@ export class DatabaseUserSurveyRepository implements IUserSurveyRepository {
   private toUserSurvey(data: UserSurvey): UserSurveyModel {
     const result = new UserSurveyModel();
     result.id = data.id;
+    result.isDone = data.isDone;
     result.userId = data.userId;
     result.user = data.user;
     result.surveyId = data.surveyId;

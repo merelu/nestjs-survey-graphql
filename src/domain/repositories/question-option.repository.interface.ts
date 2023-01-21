@@ -11,7 +11,7 @@ export interface IQuestionOptionRepository {
     conn?: EntityManager,
   ): Promise<QuestionOptionModel>;
 
-  findById(
+  findOneById(
     id: number,
     conn?: EntityManager,
   ): Promise<QuestionOptionModel | null>;

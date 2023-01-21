@@ -1,12 +1,9 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
-export class AnswerQuestionInput {
-  @Field()
-  userSurveyId: number;
-
-  @Field()
-  questionId: number;
+export class UpdateAnswerInput {
+  @Field(() => Int)
+  answerId: number;
 
   @Field(() => [Int])
   questionOptionIds: number[];

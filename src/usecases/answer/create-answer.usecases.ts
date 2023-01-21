@@ -8,7 +8,7 @@ import { IQuestionRepository } from '@domain/repositories/question.repository.in
 import { IUserSurveyRepository } from '@domain/repositories/user-survey.repository.interface';
 import { EntityManager } from 'typeorm';
 
-export class AnswerQuestionUseCases {
+export class CreateAnswerUseCases {
   constructor(
     private readonly userSurveyRepository: IUserSurveyRepository,
     private readonly answerRepository: IAnswerRepository,
@@ -87,7 +87,7 @@ export class AnswerQuestionUseCases {
       {
         id: userSurveyId,
       },
-      ['answers'],
+      ['answers', 'survey'],
     );
 
     if (!result) {
@@ -96,7 +96,12 @@ export class AnswerQuestionUseCases {
         error_text: '응시하지 않은 설문조사입니다.',
       });
     }
-    console.log(result);
+    if (!result.survey) {
+      throw this.exceptionService.apolloServerException({
+        error_code: CommonErrorCodeEnum.FORBIDDEN_REQUEST,
+        error_text: '답변할 수 없는 설문조사입니다.',
+      });
+    }
 
     const isRespondQuestion =
       result.answers?.filter((answer) => answer?.questionId === questionId)

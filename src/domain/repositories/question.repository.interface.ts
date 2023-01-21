@@ -11,7 +11,12 @@ export interface IQuestionRepository {
     conn?: EntityManager,
   ): Promise<QuestionModel>;
 
-  findById(id: number, conn?: EntityManager): Promise<QuestionModel | null>;
+  findOneById(id: number, conn?: EntityManager): Promise<QuestionModel | null>;
+
+  findDetailById(
+    id: number,
+    conn?: EntityManager,
+  ): Promise<QuestionModel | null>;
 
   findOneByQueryWithRelation(
     query: FindOptionsWhere<QuestionModel>,

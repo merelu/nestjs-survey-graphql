@@ -1,10 +1,13 @@
 import { IUserSurveyModel } from '@domain/model/database/user-survey';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class UserSurveyType implements IUserSurveyModel {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
+
+  @Field()
+  isDone: boolean;
 
   @Field()
   userId: number;

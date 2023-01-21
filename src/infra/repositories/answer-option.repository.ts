@@ -6,7 +6,7 @@ import { IAnswerOptionRepository } from '@domain/repositories/answer-option.repo
 import { AnswerOption } from '@infra/entities/answer-option';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
 
 @Injectable()
 export class DatabaseAnswerOptionRepository implements IAnswerOptionRepository {
@@ -82,6 +82,35 @@ export class DatabaseAnswerOptionRepository implements IAnswerOptionRepository {
 
     return true;
   }
+
+  async softDeleteMany(
+    answerId: number,
+    questionOptionids: number[],
+    conn?: EntityManager,
+  ): Promise<boolean> {
+    if (conn) {
+      const result = await conn
+        .getRepository(AnswerOption)
+        .softDelete({ answerId, questionOptionId: In(questionOptionids) });
+
+      console.log(result);
+      if (result.affected && result.affected === questionOptionids.length) {
+        return true;
+      }
+    } else {
+      const result = await this.answerOptionEntityRepository.softDelete({
+        answerId,
+        questionOptionId: In(questionOptionids),
+      });
+
+      if (result.affected && result.affected === questionOptionids.length) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private toAnswerOption(data: AnswerOption): AnswerOptionModel {
     const result = new AnswerOptionModel();
 

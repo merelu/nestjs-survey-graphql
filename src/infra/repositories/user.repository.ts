@@ -31,11 +31,14 @@ export class DatabaseUserRepository implements IUserRepository {
     return this.toUser(result);
   }
 
-  async findById(id: number, conn?: EntityManager): Promise<UserModel | null> {
+  async findOneById(
+    id: number,
+    conn?: EntityManager,
+  ): Promise<UserModel | null> {
     let result: User | null = null;
 
     if (conn) {
-      result = await conn.getRepository(User).findOneOrFail({ where: { id } });
+      result = await conn.getRepository(User).findOne({ where: { id } });
     } else {
       result = await this.userEntityRepository.findOne({
         where: { id },
@@ -55,9 +58,7 @@ export class DatabaseUserRepository implements IUserRepository {
     let result: UserModel | null = null;
 
     if (conn) {
-      result = await conn
-        .getRepository(User)
-        .findOneOrFail({ where: { name } });
+      result = await conn.getRepository(User).findOne({ where: { name } });
     } else {
       result = await this.userEntityRepository.findOne({
         where: { name },

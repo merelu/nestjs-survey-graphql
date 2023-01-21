@@ -1,6 +1,7 @@
 import { CreateAnswerModel, AnswerModel } from '@domain/model/database/answer';
 import { IAnswerRepository } from '@domain/repositories/answer.repository.interface';
 import { Answer } from '@infra/entities/answer';
+import { UserSurvey } from '@infra/entities/user-survey.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
@@ -18,6 +19,17 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
     private readonly answerEntityRepository: Repository<Answer>,
   ) {}
 
+  async findByUserSurveyId(userSurveyId: number): Promise<AnswerModel[]> {
+    const result = await this.answerEntityRepository
+      .createQueryBuilder('answer')
+      .where('answer.userSurveyId = :userSurveyId', { userSurveyId })
+      .leftJoinAndSelect('answer.answerOptions', 'answerOptions')
+      .leftJoinAndSelect('answerOptions.questionOption', 'questionOption')
+      .getMany();
+
+    return result.map((v) => this.toAnswer(v));
+  }
+
   async create(
     data: CreateAnswerModel,
     conn?: EntityManager,
@@ -29,6 +41,26 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
       return this.toAnswer(result);
     }
     const result = await this.answerEntityRepository.save(answerEntity);
+    return this.toAnswer(result);
+  }
+
+  async findOneById(
+    id: number,
+    conn?: EntityManager,
+  ): Promise<AnswerModel | null> {
+    let result: Answer | null = null;
+
+    if (conn) {
+      result = await conn.getRepository(Answer).findOne({ where: { id } });
+    } else {
+      result = await this.answerEntityRepository.findOne({
+        where: { id },
+      });
+    }
+
+    if (!result) {
+      return null;
+    }
     return this.toAnswer(result);
   }
 
@@ -94,6 +126,7 @@ export class DatabaseAnswerRepository implements IAnswerRepository {
     result.question = data.question;
     result.userSurveyId = data.userSurveyId;
     result.userSurvey = data.userSurvey;
+    result.answerOptions = data.answerOptions;
     result.createdAt = data.createdAt;
     result.updatedAt = data.updatedAt;
     result.deletedAt = data.deletedAt;

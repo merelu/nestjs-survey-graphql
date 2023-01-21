@@ -1,4 +1,4 @@
-import { PickType } from '@nestjs/mapped-types';
+import { PartialType, PickType } from '@nestjs/mapped-types';
 import { AnswerOptionModel } from './answer-option';
 import { CommonModel } from './common';
 import { QuestionModel } from './question';
@@ -31,7 +31,6 @@ export class CreateQuestionOptionModel extends PickType(QuestionOptionModel, [
   'order',
 ] as const) {}
 
-export class UpdateQuestionOptionModel extends PickType(QuestionOptionModel, [
-  'optionContent',
-  'score',
-] as const) {}
+export class UpdateQuestionOptionModel extends PartialType(
+  PickType(CreateQuestionOptionModel, ['optionContent', 'score'] as const),
+) {}

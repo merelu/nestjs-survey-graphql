@@ -32,7 +32,7 @@ export class CreateQuestionOptionUseCases {
   }
 
   private async isValidQuestion(questionId: number) {
-    const result = await this.questionRepository.findById(questionId);
+    const result = await this.questionRepository.findOneById(questionId);
 
     if (!result) {
       throw this.exceptionService.apolloServerException({

@@ -1,10 +1,10 @@
 import { IAnswerModel } from '@domain/model/database/answer';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { AnswerOptionType } from './answer-option.type';
 
 @ObjectType()
 export class AnswerType implements IAnswerModel {
-  @Field(() => ID)
+  @Field(() => Int)
   id: number;
 
   @Field()

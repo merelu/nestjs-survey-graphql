@@ -37,7 +37,7 @@ export class DatabaseQuestionOptionRepository
     return this.toQuestionOption(result);
   }
 
-  async findById(
+  async findOneById(
     id: number,
     conn?: EntityManager,
   ): Promise<QuestionOptionModel | null> {
@@ -46,7 +46,7 @@ export class DatabaseQuestionOptionRepository
     if (conn) {
       result = await conn
         .getRepository(QuestionOption)
-        .findOneOrFail({ where: { id } });
+        .findOne({ where: { id } });
     } else {
       result = await this.questionOptionEntityRepository.findOne({
         where: { id },
@@ -80,7 +80,7 @@ export class DatabaseQuestionOptionRepository
     conn?: EntityManager,
   ): Promise<void> {
     if (conn) {
-      await conn.getRepository(QuestionOptionModel).update({ id }, data);
+      await conn.getRepository(QuestionOption).update({ id }, data);
     } else {
       await this.questionOptionEntityRepository.update({ id }, data);
     }

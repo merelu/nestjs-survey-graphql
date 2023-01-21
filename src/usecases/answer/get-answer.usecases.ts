@@ -1,15 +1,18 @@
 import { IException } from '@domain/adapters/exception.interface';
 import { CommonErrorCodeEnum } from '@domain/common/enums/error-code.enum';
-import { IQuestionOptionRepository } from '@domain/repositories/question-option.repository.interface';
+import { IAnswerRepository } from '@domain/repositories/answer.repository.interface';
 
-export class GetQuestionOptionUseCases {
+export class GetAnswerUseCases {
   constructor(
-    private readonly questionOptionRepository: IQuestionOptionRepository,
-    private readonly exceptionService: IException,
+    private readonly answerRepository: IAnswerRepository,
+    private exceptionService: IException,
   ) {}
 
-  async getQuestionOptionDetailById(id: number) {
-    const result = await this.questionOptionRepository.findOneById(id);
+  async getAnswerDetailById(id: number) {
+    const result = await this.answerRepository.findOneByQueryWithRelation(
+      { id },
+      ['answerOptions'],
+    );
 
     if (!result) {
       throw this.exceptionService.apolloServerException({
@@ -17,6 +20,7 @@ export class GetQuestionOptionUseCases {
         error_text: 'id에 해당하는 데이터가 없습니다.',
       });
     }
+
     return result;
   }
 }

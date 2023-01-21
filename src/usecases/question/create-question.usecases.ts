@@ -29,7 +29,7 @@ export class CreateQuestionUseCases {
   }
 
   private async isValidSurvey(surveyId: number) {
-    const result = await this.surveyRepository.findById(surveyId);
+    const result = await this.surveyRepository.findOneById(surveyId);
     if (!result) {
       throw this.exceptionService.apolloServerException({
         error_code: CommonErrorCodeEnum.INVALID_PARAM,
