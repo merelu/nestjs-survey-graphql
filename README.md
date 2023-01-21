@@ -12,7 +12,7 @@ $ npm install
 
 # 환경변수
 
-환경설정 루트경로에 .env 파일 추가
+루트경로에 .env 파일 추가
 
 ```bash
 DATABASE_HOST=localhost
@@ -425,6 +425,50 @@ Response
 }
 ```
 
+문항 순서 변경
+
+- nextQuestionId
+  순서를 맨 뒤로 옮겨야 할때는 null을 보냅니다.
+  null이 아닐때는 nextQuestionId에 해당하는 데이터의 order 앞으로 옮깁니다.
+
+```graphql
+mutation {
+  updateQuestionOrder(
+    updateQuestionOrderInput: { curQuestionId: 2, nextQuestionId: null }
+  ) {
+    id
+    order
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "updateQuestionOrder": [
+      {
+        "id": 3,
+        "order": 7
+      },
+      {
+        "id": 4,
+        "order": 10
+      },
+      {
+        "id": 5,
+        "order": 12
+      },
+      {
+        "id": 2,
+        "order": 13
+      }
+    ]
+  }
+}
+```
+
 ### Delete
 
 문항 삭제
@@ -547,6 +591,63 @@ Response
       "score": 2,
       "questionId": 1
     }
+  }
+}
+```
+
+선택지 순서 변경
+
+- nextQuestionOptionId
+  순서를 맨 뒤로 옮겨야 할때는 값을 보내지 않거나 null을 보냅니다.
+  null이 아닐때는 nextQuestionOptionId에 해당하는 데이터의 order 앞으로 옮깁니다.
+
+```graphql
+mutation {
+  updateQuestionOptionOrder(
+    updateQuestionOptionOrderInput: {
+      curQuestionOptionId: 3
+      nextQuestionOptionId: 5
+    }
+  ) {
+    id
+    order
+    score
+    optionContent
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "updateQuestionOptionOrder": [
+      {
+        "id": 4,
+        "order": 2,
+        "score": 3,
+        "optionContent": "테스트선택지2"
+      },
+      {
+        "id": 3,
+        "order": 4,
+        "score": 2,
+        "optionContent": "테스트선택지2"
+      },
+      {
+        "id": 5,
+        "order": 5,
+        "score": 4,
+        "optionContent": "테스트선택지2"
+      },
+      {
+        "id": 6,
+        "order": 8,
+        "score": 6,
+        "optionContent": "테스트선택지2"
+      }
+    ]
   }
 }
 ```
