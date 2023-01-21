@@ -30,9 +30,4 @@ export class UserResolver {
 
     return result;
   }
-
-  @Query(() => String)
-  async testQuery(@Args('userSurveyId', { type: () => Int }) id: number) {
-    await this.getCompletedSurveyUseCasesProxy.getInstance().execute(id);
-  }
 }

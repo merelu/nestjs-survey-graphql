@@ -3,8 +3,8 @@ import { AnswerType } from './answer.type';
 import { SurveyType } from './survey.type';
 
 @ObjectType()
-export class CompletedSurveyResultType {
-  @Field()
+export class SurveyResultType {
+  @Field({ nullable: true })
   sumScore: number;
 
   @Field(() => SurveyType)

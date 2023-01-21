@@ -1,6 +1,6 @@
 import { CreateUserSurveyModel } from '@domain/model/database/user-survey';
 import { CheckCompleteSurveyType } from '@infra/graphql/type/check-complete-survey.type';
-import { CompletedSurveyResultType } from '@infra/graphql/type/completed-survey-result.type';
+import { SurveyResultType } from '@infra/graphql/type/survey-result.type';
 import { UserSurveyType } from '@infra/graphql/type/user-survey.type';
 import { UseCaseProxy } from '@infra/usecases-proxy/usecases-proxy';
 import { UseCasesProxyModule } from '@infra/usecases-proxy/usecases-proxy.module';
@@ -22,8 +22,8 @@ export class UserSurveyResolver {
     private readonly getCompletedSurveyUseCasesProxy: UseCaseProxy<GetCompletedSurveyUseCases>,
   ) {}
 
-  @Query(() => CompletedSurveyResultType)
-  async getCompletedSurveyResult(
+  @Query(() => SurveyResultType)
+  async surveyResult(
     @Args('userSurveyId', { type: () => Int }) userSurveyId: number,
   ) {
     const result = await this.getCompletedSurveyUseCasesProxy
@@ -34,7 +34,7 @@ export class UserSurveyResolver {
       sumScore: result.sumScore,
       survey: result.userSurvey.survey,
       answers: result.userSurvey.answers,
-    } as CompletedSurveyResultType;
+    } as SurveyResultType;
   }
 
   @Mutation(() => UserSurveyType)

@@ -21,7 +21,7 @@ type AnswerType {
   id: Int!
   questionId: Float!
   userSurveyId: Float!
-  answerOptions: [AnswerOptionType!]!
+  answerOptions: [AnswerOptionType!]
 }
 
 type QuestionType {
@@ -30,7 +30,7 @@ type QuestionType {
   allowMultipleAnswers: Boolean!
   surveyId: Float!
   order: Float!
-  questionOptions: [QuestionOptionType!]!
+  questionOptions: [QuestionOptionType!]
 }
 
 type SurveyType {
@@ -38,7 +38,7 @@ type SurveyType {
   title: String!
   description: String!
   footer: String!
-  questions: [QuestionType!]!
+  questions: [QuestionType!]
 }
 
 type CheckCompleteSurveyType {
@@ -46,8 +46,8 @@ type CheckCompleteSurveyType {
   inCompletedQuestionIds: [Float!]!
 }
 
-type CompletedSurveyResultType {
-  sumScore: Float!
+type SurveyResultType {
+  sumScore: Float
   survey: SurveyType!
   answers: [AnswerType!]!
 }
@@ -65,12 +65,11 @@ type UserType {
 }
 
 type Query {
-  testQuery(userSurveyId: Int!): String!
   survey(id: Int!): SurveyType!
   surveys: [SurveyType!]!
   question(id: Int!): QuestionType!
   questionOption(id: Int!): QuestionOptionType!
-  getCompletedSurveyResult(userSurveyId: Int!): CompletedSurveyResultType!
+  surveyResult(userSurveyId: Int!): SurveyResultType!
   answer(id: Int!): AnswerType!
 }
 

@@ -13,6 +13,6 @@ export class AnswerType implements IAnswerModel {
   @Field()
   userSurveyId: number;
 
-  @Field(() => [AnswerOptionType])
+  @Field(() => [AnswerOptionType], { nullable: true })
   answerOptions: AnswerOptionType[];
 }

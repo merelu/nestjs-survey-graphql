@@ -19,6 +19,6 @@ export class QuestionType implements IQuestionModel {
   @Field()
   order: number;
 
-  @Field(() => [QuestionOptionType])
+  @Field(() => [QuestionOptionType], { nullable: true })
   questionOptions: QuestionOptionType[];
 }

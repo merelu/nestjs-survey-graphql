@@ -16,6 +16,6 @@ export class SurveyType implements ISurveyModel {
   @Field()
   footer: string;
 
-  @Field(() => [QuestionType])
+  @Field(() => [QuestionType], { nullable: true })
   questions: QuestionType[];
 }
